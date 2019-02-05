@@ -553,6 +553,7 @@ for(i in seq_along(forexport[,(yearcols),with=F])){
 }
 forexport[forexport==-100]<-.001
 
+fyear<-as.numeric(yearcols[[1]])
 #make model readable
 forexport[,test:= Reduce(`+`, lapply(.SD, function(x) is.na(x)))]
 forexport<-forexport[,!c("geography", "code","variable"),with=F]
@@ -560,8 +561,8 @@ forexport[,`:=`
           (V          ="V",
             L          ="L",
             pers       = nyear-test+1)][,`:=`
-                                        (start      =200701,
-                                          end        =paste(2007+pers-1,"01",sep=""))][,`:=`
+                                        (start      =paste0(fyear,"01"),
+                                          end        =paste(fyear+pers-1,"01",sep=""))][,`:=`
                                                                                        (header="1.upload",
                                                                                          pers=paste(pers,"@01",sep=""),
                                                                                          forecastend=end)][,test:=NULL]
