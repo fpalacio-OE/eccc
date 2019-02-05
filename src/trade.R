@@ -491,12 +491,11 @@ fulldbmelted[,`:=`
                sectorcode  =sectors$code[match(fulldbmelted$geography, sectors$geography, nomatch=NA)],
                sectormnems =mnems$mnem[match(fulldbmelted$code,mnems$code,nomatch=NA)])
              ]
-fulldbmelted<-fulldbmelted[!is.na(varsymbol)|is.na(sectormnems)]
+fulldbmelted<-fulldbmelted[!is.na(varsymbol) & !is.na(sectormnems)]
 #additional fixes to trade mnemonics
 fulldbmelted[geography=="Canada" & varsymbol=="MX", varsymbol:="M"]
 fulldbmelted[geography=="Canada" & varsymbol=="XX", varsymbol:="X" ]
 
-fulldbmelted[is.na(varsymbol),varsymbol:=""]
 fulldbmelted[is.na(pricesymbol),pricesymbol:=""]
 fulldbmelted[is.na(sectorcode),sectorcode:=""]
 fulldbmelted[is.na(sectormnems),sectormnems:=""]
@@ -510,7 +509,6 @@ fulldbmelted<-unique(fulldbmelted)
 widedb<-dcast(fulldbmelted, geography+code+sectorcode+variable+mnemonic+mnem~year)
 widedb[,mnem:=NULL]
 #get rid of the uneeded intersection
-macrovars<-str_trim(macrovars, side="both")
 forexport<-widedb
 forexport<-forexport[ !(code=="NAT") ]
 
