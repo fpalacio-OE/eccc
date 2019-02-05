@@ -21,8 +21,8 @@ library(rlang)
 #############################################################################################
 ## Set Directory, Export Name, Import Range, and other parameters:
 #############################################################################################
-srcDir     = "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/helperfiles/"
-dstDir     = "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/outputs/"
+srcDir     = "/Users/Fabio/Documents/oe/eccc/resources/"
+dstDir     = "/Users/Fabio/Documents/oe/eccc/outputs/"
 
 provinces<-c(
   "Alberta",
@@ -67,8 +67,9 @@ shiftshares<- as.data.table(read_excel(naicsdir,  na = "NA", sheet= "Shiftshares
 
 
 
+
 #############################################################################################
-##5. Export
+## Get trade data
 #############################################################################################
 options(scipen = 999)
 #Load up bases
@@ -82,6 +83,24 @@ rm(envcandb)
 
 tradeseries<-c("geography","industry","year",as.character(names(envcandbshort)[grepl("2280064|3860003|3800070",names(envcandbshort)) ]))
 trade<-envcandbshort[,..tradeseries]
+
+#############################################################################################
+## Get deflators
+#############################################################################################
+deflator_file<-"final-goutput2.rds"
+
+deflator_file<-readRDS(paste0(srcDir,deflator_file))
+deflator_file<-deflator_file[grepl("^P",mnemonic) & !mnemonic %like% "PGDP",!c("header","V","L","start","end","forecastend","pers"),with=F]
+deflator_file[,mnemonic:=substring(mnemonic,2)]
+deflator_file<-melt(deflator_file, id.vars = c("sectorcode","mnemonic"),variable.name = "year",value.name = "deflator")
+deflator_file[,`:=`(deflator=as.numeric(deflator),year=as.character(year))]
+deflator_file[is.na(deflator)|deflator==""|deflator==.001,deflator:=NA]
+deflator_file[mnemonic=="PI",mnemonic:=NA]
+setnames(deflator_file,"mnemonic","mnem")
+
+#############################################################################################
+## Begin building new series
+#############################################################################################
 
 
 #get the necessary files
@@ -223,14 +242,14 @@ intimportindex<-merge(weights, tradeformerge, by.x = c("PRODUCT"), by.y=c("indus
 #calculate sector indexes from weights (weighted averages)
 indeces<- c("paasche", "laspeyres")
 intimportindex[,basis:=sum(SumOfValue),by=list(year,model_sector,geography)]
-intimportindex[,proportions:=SumOfValue/basis]
+intimportindex[,proportions:=ifelse(is.finite(SumOfValue/basis),SumOfValue/basis,NA)]
 intimportindex[,(indeces):=list(`paasche current weighted-price index-import-2280064`*proportions,`laspeyres fixed weighted-price index-import-2280064`*proportions)]
 intimportindex[,(indeces):=list(sum(paasche),sum(laspeyres)),by=list(year,model_sector,geography)]
 
 #calculate final index (paasche * laspeyres)^.5
 intimportindex[,importindex:=(paasche*laspeyres)^.5]
 
-intimportindex<-intimportindex[,..keep]
+intimportindex<-unique(intimportindex[,..keep])
 
 #############################################################################
 ##int nat. imports ####
@@ -346,7 +365,7 @@ sumfunct<-function(x,y){
   components<-y
   
   forsum    <-tradefinal[code %in% components]
-  sum       <-forsum[,lapply(.SD,mysum), by=list(geography,year),.SDcol=names(forsum)[names(forsum) %like% "inter"|names(forsum) %like% "index"]]
+  sum       <-forsum[,lapply(.SD,mysum), by=list(geography,year),.SDcol=names(forsum)[names(forsum) %like% "inter"]]
   
   sum[,`:=`(code=target, mnem=mnems$mnem[match(target,mnems$code,nomatch = NA)], industry=mnems$X__1[match(target,mnems$code,nomatch = NA)]) ]
   
@@ -356,16 +375,72 @@ sumfunct<-function(x,y){
   
 }
 
-#apply sum function
-for(i in 1:nrow(work_graph)){
-  print(i)
-  sum<-sumfunct(work_graph$target_sects[[i]],work_graph$sum_sects[[i]])
-  tradefinal<-rbind(tradefinal,sum)
+avgfunct<-function(x,y){
+  target    <-x
+  components<-y
+  
+  foravg    <-tradefinal[code %in% components]
+  avg       <-foravg[,lapply(.SD,function(x) mean(x,na.rm = TRUE)), by=list(geography,year),.SDcol=names(foravg)[names(foravg) %like% "index"]]
+  
+  avg[,`:=`(code=target, mnem=mnems$mnem[match(target,mnems$code,nomatch = NA)], industry=mnems$X__1[match(target,mnems$code,nomatch = NA)]) ]
+  
+  avg<-as.data.table(avg)
+  
+  #tradefinal<-rbind(sum,tradefinal)
   
 }
 
 
-fulldb<-tradefinal
+#apply sum function
+for(i in 1:nrow(work_graph)){
+  print(i)
+  sum<-sumfunct(work_graph$target_sects[[i]],work_graph$sum_sects[[i]])
+  avg<-avgfunct(work_graph$target_sects[[i]],work_graph$sum_sects[[i]])
+  newsects<-merge(avg,sum,by=c("geography", "year", "code","mnem","industry"))
+  
+  tradefinal<-rbind(tradefinal,newsects)
+  
+}
+
+tradefinal[is.nan(importindex),importindex:=NA]
+
+######################################################
+#Step 8:                                         #####
+# Create real series                             #####
+######################################################
+
+tradefinal[,sectorcode  :=sectors$code[match(geography, sectors$geography, nomatch=NA)]]
+
+#fixing the international import index
+importindex<- tradefinal[geography=="Canada",.(importindex,code,year)]
+#for interprovincial imports
+intprov_importindex<-deflator_file[sectorcode=="CANADA",.(mnem,deflator,year)]
+setnames(intprov_importindex,"deflator","intprovdefl")
+
+#re merging
+tradefinal2<-merge(tradefinal[,!"importindex",with=F],importindex,by=c("code","year"))
+tradefinal2<-merge(tradefinal2,intprov_importindex,by=c("mnem","year"))
+tradefinal2<-merge(tradefinal2,deflator_file, by=c("mnem","year","sectorcode"))
+
+#calculate
+real<-paste0(c("internatimports","interprovimports","interprovexports","internatexports"),"_real")
+
+tradefinal2[,(real):=list(
+  internatimports/(importindex/100),
+  interprovimports/(intprovdefl/100),
+  interprovexports/(deflator/100),
+  internatexports/(deflator/100)
+)]
+
+tradefinal2[,sectorcode:=NULL]
+
+######################################################
+#Step 9:                                         #####
+# Prepare for export                             #####
+######################################################
+
+
+fulldb<-tradefinal2
 
 
 
