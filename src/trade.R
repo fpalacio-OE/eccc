@@ -252,7 +252,7 @@ tradeformerge[,industry:=str_trim(gsub(" \\(x 1,000\\)","",industry))]
 #Merge and consolidate
 keep<-c("GEO", "sector_cd", "model_sector", "year","importindex")
 #intimportindex<-merge(weights, tradeformerge, by.x = c("PRODUCT"), by.y=c("industry"), allow.cartesian=T) 
-intimportindex<-merge(intimp_weights_id, tradeformerge, by.x = c("Product"), by.y=c("industry"),allow.cartesian=T) 
+intimportindex<-unique(merge(intimp_weights_id, tradeformerge, by.x = c("Product"), by.y=c("industry"),allow.cartesian=T) )
 intimportindex[,GEO:=NULL]
 
 #calculate sector indexes from weights (weighted averages)
@@ -262,6 +262,8 @@ indeces<- c("paasche", "laspeyres")
 
 intimportindex[,(indeces):=list(`paasche current weighted-price index-import-2280064`*PMXwt,`laspeyres fixed weighted-price index-import-2280064`*PMXwt)]
 intimportindex[,(indeces):=list(sum(paasche),sum(laspeyres)),by=list(year,model_sector,geography)]
+intimportindex[,test:=sum(PMXwt),by=list(year,model_sector,geography)]
+intimportindex[,(indeces):=list(ifelse(abs(test-1)>.1,paasche/test,paasche),ifelse(abs(test-1)>.1,laspeyres/test,laspeyres))]
 
 #calculate final index (paasche * laspeyres)^.5
 intimportindex[,importindex:=(paasche*laspeyres)^.5]
