@@ -572,6 +572,7 @@ for(i in seq_along(forexport[,(yearcols),with=F])){
 }
 forexport[forexport==-100]<-.001
 
+fyear<-yearcols[[1]]
 #make model readable
 forexport[,test:= Reduce(`+`, lapply(.SD, function(x) is.na(x)))]
 forexport<-forexport[,!c("geography", "code","variable"),with=F]
@@ -579,8 +580,8 @@ forexport[,`:=`
           (V          ="V",
             L          ="L",
             pers       = nyear-test+1)][,`:=`
-                                        (start      =199701,
-                                          end        =paste(2007+pers-1,"01",sep=""))][,`:=`
+                                        (start      =paste0(fyear,"01"),
+                                          end        =paste(as.numeric(fyear)+pers-1,"01",sep=""))][,`:=`
                                                                                        (header="1.upload",
                                                                                          pers=paste(pers,"@01",sep=""),
                                                                                          forecastend=end)][,test:=NULL]
@@ -594,7 +595,7 @@ yearcols<-names(forexport)[10:(10+nyear)]
 #export
 exportname= "trade"
 rdsexport = paste(exportname, ".rds",sep="")
-destname<-paste(dst,rdsexport,sep="")
+destname<-paste(dstDir,rdsexport,sep="")
 saveRDS(forexport, eval(destname))
 
 csvexport = paste(exportname, ".csv",sep="")
