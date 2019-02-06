@@ -23,8 +23,8 @@ library(rlang)
 #############################################################################################
 # srcDir     = "/Users/Fabio/Documents/oe/eccc/resources/"
 # dstDir     = "/Users/Fabio/Documents/oe/eccc/outputs/"
-srcDir     = "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/helperfiles/"
-dstDir     = "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/outputs/"
+srcDir     = "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/eccc/resources/"
+dstDir     = "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/eccc/outputs/"
 
 provinces<-c(
   "Alberta",
@@ -68,6 +68,13 @@ sectors <- as.data.table(read_excel(naicsdir,  na = "NA", sheet="sectorcode",col
 shiftshares<- as.data.table(read_excel(naicsdir,  na = "NA", sheet= "Shiftshares" ,col_names= TRUE))
 
 
+#concordance
+concordance_file= "Trade-concordance.xlsx"
+concordance<- as.data.table(read_excel(paste0(srcDir,concordance_file),  na = "NA" ,col_names= TRUE))
+
+#int. import weights
+intimp_file= "pmx_weights.xlsx"
+intimp_weights<- as.data.table(read_excel(paste0(srcDir,intimp_file),  na = "NA" ,col_names= TRUE))
 
 
 #############################################################################################
@@ -224,12 +231,15 @@ imports<-imports[,..tokeep]
 #### 3. int nat. import index                                            ####
 #############################################################################
 #Weights
-weightsfilepath<- paste(srcDir,weightsfilename, sep="")
-weights<- as.data.table(read_excel(weightsfilepath,  na = "NA", sheet= eval(intnatimp) ,col_names= TRUE))
-weights<-remap[weights,on=c("PRODUCT","sector_cd")][,ProductCode:=NULL]
-setnames(weights,"i.ProductCode","ProductCode")
-weights[,sector_cd:=ifelse(is.na(sector_cd_new),sector_cd,sector_cd_new)][,sector_cd_new:=NULL]
-weights[,PRODUCT:=str_trim(gsub(" \\(x 1,000\\)","",PRODUCT))]
+# weightsfilepath<- paste(srcDir,weightsfilename, sep="")
+# weights<- as.data.table(read_excel(weightsfilepath,  na = "NA", sheet= eval(intnatimp) ,col_names= TRUE))
+# weights<-remap[weights,on=c("PRODUCT","sector_cd")][,ProductCode:=NULL]
+# setnames(weights,"i.ProductCode","ProductCode")
+# weights[,sector_cd:=ifelse(is.na(sector_cd_new),sector_cd,sector_cd_new)][,sector_cd_new:=NULL]
+# weights[,PRODUCT:=str_trim(gsub(" \\(x 1,000\\)","",PRODUCT))]
+# 
+# 
+intimp_weights_id<-merge(intimp_weights,concordance,by.x="NAPCS 3-digit",by.y="NAPCS")
 
 
 importseries<-names(trade)[tolower(names(trade)) %like% "price index-import"]
@@ -237,19 +247,25 @@ tokeep<-c("geography","industry","year",importseries)
 tradeformerge<-unique(trade[,..tokeep])
 tradeformerge[,industry:=str_trim(gsub(" \\(x 1,000\\)","",industry))]
 
+
+
 #Merge and consolidate
 keep<-c("GEO", "sector_cd", "model_sector", "year","importindex")
-intimportindex<-merge(weights, tradeformerge, by.x = c("PRODUCT"), by.y=c("industry"), allow.cartesian=T) 
+#intimportindex<-merge(weights, tradeformerge, by.x = c("PRODUCT"), by.y=c("industry"), allow.cartesian=T) 
+intimportindex<-merge(intimp_weights_id, tradeformerge, by.x = c("Product"), by.y=c("industry"),allow.cartesian=T) 
+intimportindex[,GEO:=NULL]
 
 #calculate sector indexes from weights (weighted averages)
 indeces<- c("paasche", "laspeyres")
-intimportindex[,basis:=sum(SumOfValue),by=list(year,model_sector,geography)]
-intimportindex[,proportions:=ifelse(is.finite(SumOfValue/basis),SumOfValue/basis,NA)]
-intimportindex[,(indeces):=list(`paasche current weighted-price index-import-2280064`*proportions,`laspeyres fixed weighted-price index-import-2280064`*proportions)]
+#intimportindex[,basis:=sum(SumOfValue),by=list(year,model_sector,geography)]
+#intimportindex[,proportions:=ifelse(is.finite(SumOfValue/basis),SumOfValue/basis,NA)]
+
+intimportindex[,(indeces):=list(`paasche current weighted-price index-import-2280064`*PMXwt,`laspeyres fixed weighted-price index-import-2280064`*PMXwt)]
 intimportindex[,(indeces):=list(sum(paasche),sum(laspeyres)),by=list(year,model_sector,geography)]
 
 #calculate final index (paasche * laspeyres)^.5
 intimportindex[,importindex:=(paasche*laspeyres)^.5]
+setnames(intimportindex,"geography","GEO")
 
 intimportindex<-unique(intimportindex[,..keep])
 
@@ -442,7 +458,7 @@ tradefinal2[,sectorcode:=NULL]
 ######################################################
 
 
-fulldb<-tradefinal2
+fulldb<-tradefinal2[geography!="Canada",importindex:=NA]
 
 
 
@@ -493,7 +509,7 @@ fulldbmelted[,`:=`
                sectorcode  =sectors$code[match(fulldbmelted$geography, sectors$geography, nomatch=NA)],
                sectormnems =mnems$mnem[match(fulldbmelted$code,mnems$code,nomatch=NA)])
              ]
-fulldbmelted<-fulldbmelted[!is.na(varsymbol)|is.na(sectormnems)]
+fulldbmelted<-fulldbmelted[!is.na(varsymbol) & !is.na(sectormnems)]
 #additional fixes to trade mnemonics
 fulldbmelted[geography=="Canada" & varsymbol=="MX", varsymbol:="M"]
 fulldbmelted[geography=="Canada" & varsymbol=="XX", varsymbol:="X" ]
@@ -512,7 +528,6 @@ fulldbmelted<-unique(fulldbmelted)
 widedb<-dcast(fulldbmelted, geography+code+sectorcode+variable+mnemonic+mnem~year)
 widedb[,mnem:=NULL]
 #get rid of the uneeded intersection
-macrovars<-str_trim(macrovars, side="both")
 forexport<-widedb
 forexport<-forexport[ !(code=="NAT") ]
 
@@ -564,7 +579,7 @@ forexport[,`:=`
           (V          ="V",
             L          ="L",
             pers       = nyear-test+1)][,`:=`
-                                        (start      =200701,
+                                        (start      =199701,
                                           end        =paste(2007+pers-1,"01",sep=""))][,`:=`
                                                                                        (header="1.upload",
                                                                                          pers=paste(pers,"@01",sep=""),
@@ -579,7 +594,7 @@ yearcols<-names(forexport)[10:(10+nyear)]
 #export
 exportname= "trade"
 rdsexport = paste(exportname, ".rds",sep="")
-destname<-paste(srcDir,rdsexport,sep="")
+destname<-paste(dst,rdsexport,sep="")
 saveRDS(forexport, eval(destname))
 
 csvexport = paste(exportname, ".csv",sep="")
