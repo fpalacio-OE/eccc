@@ -21,8 +21,10 @@ library(rlang)
 #############################################################################################
 ## Set Directory, Export Name, Import Range, and other parameters:
 #############################################################################################
-srcDir     = "/Users/Fabio/Documents/oe/eccc/resources/"
-dstDir     = "/Users/Fabio/Documents/oe/eccc/outputs/"
+# srcDir     = "/Users/Fabio/Documents/oe/eccc/resources/"
+# dstDir     = "/Users/Fabio/Documents/oe/eccc/outputs/"
+srcDir     = "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/helperfiles/"
+dstDir     = "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/outputs/"
 
 provinces<-c(
   "Alberta",
@@ -89,7 +91,7 @@ trade<-envcandbshort[,..tradeseries]
 #############################################################################################
 deflator_file<-"final-goutput2.rds"
 
-deflator_file<-readRDS(paste0(srcDir,deflator_file))
+deflator_file<-readRDS(paste0(dstDir,deflator_file))
 deflator_file<-deflator_file[grepl("^P",mnemonic) & !mnemonic %like% "PGDP",!c("header","V","L","start","end","forecastend","pers"),with=F]
 deflator_file[,mnemonic:=substring(mnemonic,2)]
 deflator_file<-melt(deflator_file, id.vars = c("sectorcode","mnemonic"),variable.name = "year",value.name = "deflator")
@@ -232,7 +234,7 @@ weights[,PRODUCT:=str_trim(gsub(" \\(x 1,000\\)","",PRODUCT))]
 
 importseries<-names(trade)[tolower(names(trade)) %like% "price index-import"]
 tokeep<-c("geography","industry","year",importseries)
-tradeformerge<-trade[,..tokeep]
+tradeformerge<-unique(trade[,..tokeep])
 tradeformerge[,industry:=str_trim(gsub(" \\(x 1,000\\)","",industry))]
 
 #Merge and consolidate
@@ -583,5 +585,3 @@ saveRDS(forexport, eval(destname))
 csvexport = paste(exportname, ".csv",sep="")
 destname<-paste(dstDir,csvexport,sep="")
 write.table(forexport, file=eval(destname), row.names=FALSE, col.names=FALSE, sep=",")
-
-
