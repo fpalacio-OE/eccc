@@ -65,10 +65,14 @@ coefs<-as.data.table(read_excel(coefpath, col_names = T))
 
 #prepare coefs for merge
 coefs<-melt(coefs, id.vars = c("X__1", "X__2"))
-coefs[X__1=="48Z"]
 coefs[,X__1:=NULL]
 names(coefs)[names(coefs) %in% c("X__2", "variable","value")]<-c("ind", "sectorcode","lcoef")
+
+#temporary fix to add these aggregate sectors (should go back and fix the YHATfactorshares file)
 coefs[ind=="TPO",ind:="TPCO"]
+x<-coefs[ind %in% c("MPETA","MNMO")]
+x[[1]]<-c("MPETAO","MNMAO")
+coefs<-rbind(coefs,x)
 
 #Calculate trend
 foroperation<-merge(coefs, foroperation, by=c("ind", "sectorcode"),all.y=T)
