@@ -20,8 +20,6 @@ hpfilter2 <- function(x,lambda=6.25){
 }
 
 forexport<-readRDS(paste(dstDir, "envcandb-filled.rds",sep=""))
-#saveRDS(forexport, "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/helperfiles/gvawithmnems.rds")
-
 
 
 dt<-forexport[(grepl("^K|^Y|^EMP|^AV", mnemonic) & !(grepl("^KD|^KME|^KIP|^KC", mnemonic)) |grepl("^KCON",mnemonic) |grepl("KMELC",mnemonic)|grepl("KCEM",mnemonic)) & !(grepl("!$", mnemonic))]
