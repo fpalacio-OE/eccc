@@ -69,10 +69,12 @@ fourthsum<-newcap[code %in% c("32412","32419")]
 fourthsum<-fourthsum[,list(value=sum(value)),by=list(newvar,year,geography)]
 fourthsum[,code:="3241A"]
 
+newcap<-rbind(newcap,secondsum,firstsum,thirdsum,fourthsum)
+
 #correct units
 newcap[,value:=value/1000]
 newcap[code==331317,code:="331314, 331315, 331318"]
 #regroup
-newcap<-rbind(newcap,secondsum,firstsum,thirdsum,fourthsum)
+
 newcap<-dcast(newcap, geography+code+year~newvar)
 saveRDS(newcap,paste(srcDir,"newcap.rds",sep=""))
