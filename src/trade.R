@@ -355,30 +355,7 @@ serdef[,`:=`(sectorcode="CANADA",mnemonic="PM",code="NAT",mnem="")]
 # Reshape, add Mnemonics export                  #####
 ######################################################
 
-
-
-codes<-mnems$code[match(tradefinal$mnem, mnems$mnem,nomatch=NA)]
-tradefinal[,code:=codes]
-
-
-#correcting some sector codes
-tradefinal[industry=="Couriers and Messengers",c("code","mnem"):=list("492","TC")]
-tradefinal[industry=="Postal Sevice",c("code","mnem"):=list("491","TS")]
-
-#add sums for higher level sectors, especially the ones that we replaced with subsectors (think mchemb)
-#collect target sectors
-matchcolumns<-shiftshares[!is.na(umbrella)]
-target_sects<-mnems$code[!mnems$mnem %in% tradefinal$mnem]
-target_sects<-target_sects[target_sects!="NAT"]
-sum_sects<-lapply(target_sects,function (x)matchcolumns$code[matchcolumns$umbrella==x])
-sum_levels<-lapply(target_sects,function (x) unique(matchcolumns$level[matchcolumns$umbrella==x]))
-
-work_graph<-as.data.table(cbind(target_sects,sum_levels,sum_sects))
-work_graph<-work_graph[unlist(lapply(sum_levels,function(x)length(x)>0))]
-work_graph[,sum_levels:=unlist(sum_levels)]
-setorder(work_graph,-sum_levels)
-
-#stipulate sum function
+#stipulate aggregation functions
 
 sumfunct<-function(x,y){
   target    <-x
@@ -410,6 +387,42 @@ avgfunct<-function(x,y){
   
 }
 
+#prepare tradefinal
+codes<-mnems$code[match(tradefinal$mnem, mnems$mnem,nomatch=NA)]
+tradefinal[,code:=codes]
+tradefinal[industry=="Couriers and Messengers",c("code","mnem"):=list("492","TC")]
+tradefinal[industry=="Postal Sevice",c("code","mnem"):=list("491","TS")]
+
+##first aggregate the top-down sectors:
+matchcolumns<-shiftshares[!is.na(umbrella)]
+target_sects<-unique(mnems$code[match(remap$sector_cd,mnems$mnem,nomatch = NA)])
+sum_sects<-lapply(target_sects,function (x)matchcolumns$code[matchcolumns$umbrella==x])
+work_graph<-as.data.table(cbind(target_sects,sum_sects))
+
+for(i in 1:nrow(work_graph)){
+  print(i)
+  sum<-sumfunct(work_graph$target_sects[[i]],work_graph$sum_sects[[i]])
+  avg<-avgfunct(work_graph$target_sects[[i]],work_graph$sum_sects[[i]])
+  newsects<-merge(avg,sum,by=c("geography", "year", "code","mnem","industry"))
+  tradefinal<-rbind(tradefinal[!code %in% unique(newsects$code)],newsects)
+  
+}
+
+tradefinal[is.nan(importindex),importindex:=NA]
+
+
+##second add sums for higher level sectors, especially the ones that we replaced with subsectors (think mchemb)
+#collect target sectors
+
+target_sects<-mnems$code[!mnems$mnem %in% tradefinal$mnem]
+target_sects<-target_sects[target_sects!="NAT"]
+sum_sects<-lapply(target_sects,function (x)matchcolumns$code[matchcolumns$umbrella==x])
+sum_levels<-lapply(target_sects,function (x) unique(matchcolumns$level[matchcolumns$umbrella==x]))
+
+work_graph<-as.data.table(cbind(target_sects,sum_levels,sum_sects))
+work_graph<-work_graph[unlist(lapply(sum_levels,function(x)length(x)>0))]
+work_graph[,sum_levels:=unlist(sum_levels)]
+setorder(work_graph,-sum_levels)
 
 #apply sum function
 for(i in 1:nrow(work_graph)){
@@ -417,7 +430,7 @@ for(i in 1:nrow(work_graph)){
   sum<-sumfunct(work_graph$target_sects[[i]],work_graph$sum_sects[[i]])
   avg<-avgfunct(work_graph$target_sects[[i]],work_graph$sum_sects[[i]])
   newsects<-merge(avg,sum,by=c("geography", "year", "code","mnem","industry"))
-  
+
   tradefinal<-rbind(tradefinal,newsects)
   
 }
