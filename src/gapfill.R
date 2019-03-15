@@ -1365,8 +1365,10 @@ names<-cbind((depreciation),stock)
 for(k in 1:length(depreciation)){
   dep<-as.character(names[k,1])
   st<-as.character(names[k,2])
-  fulldb[,eval(dep):=get(dep)/get(st)]
+  fulldb[,test2:=c(NA, get(st)[-.N]),by=list(geography,code)]
+  fulldb[,eval(dep):=get(dep)/test2]
   fulldb[get(st)==0, eval(dep):=0]
+  fulldb[,test2:=NULL]
 }
 
 
