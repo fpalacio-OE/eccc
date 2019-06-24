@@ -1,0 +1,565 @@
+Group Code,Group Title,Code,Title
+M111B,Grains and other crop products,MPG111A01,Canola
+,,MPG111A02,Oilseeds (except canola)
+,,MPG111A03,Wheat
+,,MPG111A04,Grains (except wheat)
+,,MPG111A05,Potatoes
+,,MPG111A10,Fruits and tree nuts
+,,MPG111A11,Other crop products
+,,MPG111A08,Vegetables (except potatoes)
+M112A,Live animals,MPG112001,Cattle and calves
+,,MPG112003,Hogs
+,,MPG112005,Live poultry
+,,MPG112006,Other miscellaneous live animals
+M11D0,Other farm products,IMG111A09,Imputed feed (animal feed produced for own consumption)
+,,MPG111400,Nursery and floriculture products
+,,MPG112002,Unprocessed fluid milk
+,,MPG112004,Eggs in shell
+,,MPG112007,Raw furskins; animal production not elsewhere classified
+,,IMG112008,Imputed fertilizer (fertilizer produced for own consumption)
+M11E0,Forestry products and services,MPG113001,Logs
+,,MPG113002,Pulpwood
+,,ENE113003,Fuel wood
+,,MPG113004,"Rough untreated poles, posts and piling"
+,,MPS11X000,"Custom work, agriculture, forestry, fishing and hunting services"
+,,ENE32A000,"Solid fuel products, n.e.c. (x 1,000)"
+M1140,"Fish, crustaceans, shellfish and other fishery products",MPG114000,"Fish and seafood, live, fresh, chilled or frozen"
+M1150,Support services related to farming and forestry,MPS115A01,Support services for crop production
+,,MPS115A02,"Support services for animal production, hunting and fishing"
+,,MPS115300,Support services for forestry
+M21B0,Mineral fuels,ENE211101,Conventional and synthetic crude oil
+,,ENE211102,Natural gas
+,,ENE211103,Natural gas liquids and related products
+,,ENE211104,Crude and diluted bitumen
+,,ENE212100,Coal
+,,ENE211105,"Conventional crude oil (x 1,000)"
+,,ENE211106,"Synthetic crude oil (x 1,000)"
+M2122,Metal ores and concentrates,MPG212210,Iron ores and concentrates
+,,MPG212220,Gold and silver ores and concentrates
+,,MPG212230,"Copper, nickel, lead and zinc ores and concentrates"
+,,MPG212230,"Copper, nickel, lead and zinc ores and concentrates"
+,,MPG212230,"Copper, nickel, lead and zinc ores and concentrates"
+,,MPG212290,Radioactive and other metal ores and concentrates
+,,MPG212290,Radioactive and other metal ores and concentrates
+,,MPG212231,"Copper ores and concentrates (x 1,000)"
+,,MPG212233,"Lead and zinc ores and concentrates (x 1,000)"
+,,MPG212299,"Other metal ores and concentrates (x 1,000)"
+,,MPG212291,"Radioactive ores and concentrates (x 1,000)"
+,,MPG212232,"Nickel ores and concentrates (x 1,000)"
+M2123,Non-metallic minerals,MPG212310,Stone
+,,MPG212320,"Sand, gravel, clay, and refractory minerals"
+,,MPG212392,Uncut diamonds
+,,MPG212396,Potash
+,,MPG21239C,Non-metallic minerals (except diamonds)
+M2130,Mineral support services,MPS21311A,Support services for oil and gas extraction (except exploration)
+,,MPS21311B,Support services for mining and quarrying (except exploration)
+M21A0,Mineral and oil and gas exploration,MPS21A000,Mineral and oil and gas exploration
+M2200,Utilities,ENE221100,Electricity
+,,MPS221200,Natural gas distribution
+,,MPS221301,Water delivered by water works and irrigation systems
+,,MPS221302,Sewage and dirty water disposal and cleaning services
+,,ENE221303,Steam and heated or cooled air supply services
+M23A0,Residential construction,MPG23A000,Residential construction
+M23B0,Non-residential buildings,MPG23B001,Industrial buildings
+,,MPG23B002,Office buildings
+,,MPG23B003,"Shopping centers, plazas, malls and stores"
+,,MPG23B004,Other commercial buildings
+,,MPG23B005,"Schools, colleges, universities and other educational buildings"
+,,MPG23B006,"Hospitals, health centres, clinics, nursing homes and other health care buildings"
+,,MPG23B007,Other institutional buildings
+M23C0,Engineering construction,MPG23C101,"Highway, roads, streets, bridges and overpasses"
+,,MPG23C109,Other transportation construction
+,,MPG23C201,Oil and gas production facilities
+,,MPG23C209,Other oil and gas engineering construction
+,,MPG23C300,Electric power engineering construction
+,,MPG23C400,Communication engineering construction
+,,MPG23C501,Marine engineering construction
+,,MPG23C502,Waterworks engineering construction
+,,MPG23C503,Sewage engineering construction
+,,MPG23C504,Mining engineering construction
+,,MPG23C509,Other engineering construction
+M23D0,Repair construction services,MPS23D000,Repair construction services
+M31C0,Food and non-alcoholic beverages,MPG311101,Dog and cat food products
+,,MPG311109,Other animal feed
+,,MPG311204,Flour and other grain mill products
+,,MPG311202,Margarine and cooking oils
+,,MPG311203,Breakfast cereal and other cereal products
+,,MPG311208,"Grain and oilseed products, not elsewhere classified"
+,,MPG311301,Sugar and sugar mill by-products
+,,MPG311302,Chocolate (except confectionery)
+,,MPG311303,Confectionery products
+,,MPG311401,Fruit and vegetable juices (including frozen concentrated)
+,,MPG311402,Preserved fruit and vegetables and frozen foods
+,,MPG311501,Fluid milk and processed milk products (except frozen)
+,,MPG311502,Cheese and cheese products
+,,MPG311503,Other dairy products
+,,MPG311504,Ice cream and frozen desserts
+,,MPG311601,Fresh and frozen beef and veal
+,,MPG311602,Fresh and frozen pork
+,,MPG311603,Fresh and frozen poultry and fowl
+,,MPG311604,Fresh and frozen lamb and goat meat
+,,MPG311605,Processed meat products and animal by-products
+,,MPG311700,Prepared and packaged seafood products
+,,MPG311801,Bread and rolls
+,,MPG311802,"Cookies, crackers and baked sweet goods"
+,,MPG311803,"Flour mixes, dough and dry pasta"
+,,MPG311901,Snack food products
+,,MPG311902,Coffee and tea
+,,MPG311903,"Flavouring syrups, seasonings and dressings"
+,,MPG311909,Other miscellaneous food products
+,,MPG312110,"Bottled water, soft drinks and ice"
+M312A,Alcoholic beverages and tobacco products,MPG312120,Beer
+,,MPG3121A1,Wine and brandy
+,,MPG3121A2,Distilled liquor
+,,MPG312200,Tobacco products
+,,MPG312200,Tobacco products
+,,MPG312202,"Cigarettes, cigars, chewing and smoking tobacco (x 1,000)"
+,,MPG312201,"Stemmed, redried or reconstituted tobacco (x 1,000)"
+M31D0,"Textile products, clothing, and products of leather and similar materials",MPG31A001,"Fibre, yarn and thread"
+,,MPG31A002,Fabrics
+,,MPG31A003,Carpets and rugs
+,,MPG31A004,Other textile furnishings
+,,MPG31A005,Other textile products
+,,MPS31A006,Textile and fabric finishing and coating services
+,,MPG31B001,Men's and women's clothing
+,,MPG31B002,Infant and baby clothing
+,,MPG31B003,Clothing accessories
+,,MPG31B004,Leather and dressed furs
+,,MPG31B005,Footwear
+,,MPG31B006,"Suitcases, handbags and other leather and allied products"
+M3210,Wood products,MPG321101,Hardwood lumber
+,,MPG321102,Softwood lumber
+,,MPG321103,Wood chips
+,,MPG321104,Other sawmill and treated wood products
+,,MPG321201,Veneer and plywood
+,,MPG321202,Engineered wood members and trusses
+,,MPG321203,Reconstituted wood products
+,,MPG321901,Wood windows and doors
+,,MPG321908,Other wood millwork products
+,,MPG321903,Wood containers and pallets
+,,MPG321904,Prefabricated wood buildings and components
+,,MPG321X00,"Waste and scrap of wood, wood by-products"
+M3220,"Wood pulp, paper and paper products and paper stock",MPG322101,Wood pulp
+,,MPG322102,Paper (except newsprint)
+,,MPG322103,Newsprint
+,,MPG322104,Paperboard
+,,MPG322201,Paperboard containers
+,,MPG322202,Paper stationery products
+,,MPG322203,Disposable diapers and feminine hygiene products
+,,MPG322204,Sanitary paper products
+,,MPG322209,Other converted paper products
+,,MPG322X00,Waste and scrap of paper and paperboard
+M3230,Printed products and services,MPG323001,Printed products
+,,MPS323002,Support services for printing
+,,MPS323003,Contract printing services for publishers
+M3240,Refined petroleum products (except petrochemicals),ENE324111,Gasoline
+,,ENE324112,Diesel fuel
+,,ENE324113,Light fuel oils
+,,ENE324114,Jet fuel
+,,ENE324115,Heavy fuel oils
+,,MPG3241A1,Asphalt and asphalt products
+,,ENE3241A2,Coke and other coke oven products
+,,MPG3241A8,Lubricants and other petroleum refinery products
+,,MPG3241B0,Lubricants and other petroleum and coal products
+,,MPG3241B0,Lubricants and other petroleum and coal products
+M3250,Chemical products,MPG325101,Petrochemicals
+,,MPG325102,Industrial gases
+,,MPG325103,Dyes and pigments
+,,MPG325106,Other basic inorganic chemicals
+,,MPG325105,Other basic organic chemicals
+,,MPG325201,Plastic resins
+,,MPG325202,Rubber and rubber compounds and mixtures
+,,MPG325203,Artificial and synthetic fibres and filaments
+,,MPG325301,Ammonia and chemical fertilizer
+,,MPG325302,Pesticide and other agricultural chemicals
+,,MPG325400,Pharmaceutical and medicinal products
+,,MPG325500,"Paints, coatings and adhesive products"
+,,MPG325601,Soaps and cleaning compounds
+,,MPG325602,Toiletries preparations
+,,MPG325900,Chemical products not elsewhere classified
+M3260,Plastic and rubber products,MPG326101,Plastic bags
+,,MPG326102,Plastic films and non-rigid sheets
+,,MPG326103,Plastic building and construction materials
+,,MPG326104,Plastic profile shapes
+,,MPG326105,Foam products (except for construction)
+,,MPG326106,Plastic bottles
+,,MPG326107,Motor vehicle plastic parts
+,,MPG326109,"Plastic products, not elsewhere classified"
+,,MPG326201,Tires
+,,MPG326202,Rubber and plastic hoses and belts
+,,MPG326209,"Rubber products, not elsewhere classified"
+,,MPG326X00,Waste and scrap of plastic and rubber
+M3270,Non-metallic mineral products,MPG327301,Cement
+,,MPG327302,Ready-mixed concrete
+,,MPG327303,Concrete products
+,,MPG327A01,Clay products and refractories
+,,MPG327A02,Glass and glass products
+,,MPG327A03,Waste and scrap of glass
+,,MPG327A04,Lime and gypsum products
+,,MPG327A09,"Non-metallic mineral products, not elsewhere classified"
+M3310,Primary metallic products,MPG331100,Iron and steel basic shapes and ferro-alloy products
+,,MPG331201,Iron and steel pipes and tubes (except castings)
+,,MPG331202,Rolled and drawn steel products including wire
+,,MPG3313A0,"Bauxite, aluminum oxide and primary aluminum products"
+,,MPG3313A0,"Bauxite, aluminum oxide and primary aluminum products"
+,,MPG331303,Aluminum and aluminum-alloy semi-finished products
+,,MPG3314A0,Refined non-ferrous metals and non-ferrous metal alloys (except aluminum and precious metals)
+,,MPG3314A0,Refined non-ferrous metals and non-ferrous metal alloys (except aluminum and precious metals)
+,,MPG3314A0,Refined non-ferrous metals and non-ferrous metal alloys (except aluminum and precious metals)
+,,MPG3314B0,"Refined precious metals, precious metals alloys and gold as store of value"
+,,MPG3314B0,"Refined precious metals, precious metals alloys and gold as store of value"
+,,MPG331406,Basic non-ferrous metal products (except aluminum)
+,,MPG331501,Ferrous metal castings (except pipe)
+,,MPG331502,Non-ferrous metal castings
+,,MPG331X01,Waste and scrap of iron and steel
+,,MPG331X02,Waste and scrap of non-ferrous metals
+,,MPG331302,"Unwrought aluminum including alloys (x 1,000)"
+,,MPG331402,"Unwrought nickel including alloys (x 1,000)"
+,,MPG331404,"Other unwrought non-ferrous metals including alloys (x 1,000)"
+,,MPG331403,"Unwrought precious metals including alloys (x 1,000)"
+,,MPG331301,"Bauxite and aluminum oxide (x 1,000)"
+,,MPG331401,"Unwrought copper including alloys (x 1,000)"
+M3320,Fabricated metallic products,MPG332101,Forged and stamped metal products
+,,MPG332301,Prefabricated metal building and components
+,,MPG332302,Fabricated steel plates and other fabricated structural metal
+,,MPG332303,Metal windows and doors
+,,MPG332A05,Other ornamental and architectural metal products
+,,MPG332401,"Light gauge metal containers, crowns and closures"
+,,MPG332402,"Boiler, tanks and heavy gauge metal containers"
+,,MPG332500,Hardware
+,,MPG332600,Springs and wire products
+,,MPG332700,Threaded metal fasteners and other turned metal products
+,,MPS332800,"Coating, engraving, heat treating and similar metal processing services"
+,,MPG332A01,Hand tools and cutlery (except precious metal)
+,,MPG332A02,Metal valves and pipe fittings
+,,MPG332A03,Ball and roller bearings
+,,MPG332A04,"Guns, ammunition and ordnance"
+,,MPG332A08,"Fabricated metal products, not elsewhere classified"
+M3330,Industrial machinery,MPG333101,"Agricultural, lawn and garden machinery and equipment"
+,,MPG333102,"Logging, mining and construction machinery and equipment"
+,,MPG333200,Other industry-specific machinery
+,,MPG333300,Commercial and service industry machinery
+,,MPG333401,"Industrial and commercial fans and blowers, and air purification equipment"
+,,MPG333402,Heating and cooling equipment (except household refrigerators and freezers)
+,,MPG333500,Metalworking machinery
+,,MPG333601,Turbines and turbine generator set units
+,,MPG333609,Other engine and power transmission equipment
+,,MPG333901,Pumps and compressors
+,,MPG333902,Material handling equipment
+,,MPG333909,Other miscellaneous general-purpose machinery
+M334C,Computers and electronic products,MPG334101,Parts of computers and computer peripheral (except printed circuit assemblies)
+,,MPG334100,Computers and computer peripheral equipment
+,,MPG334201,Telephone apparatus
+,,MPG334209,Other communications equipment
+,,MPG334A01,Televisions and other audio and video equipment
+,,MPG334A02,Navigational and guidance instruments
+,,MPG334A03,"Measuring, medical and controlling devices"
+,,MPG334A04,Unrecorded magnetic and optical recording media
+,,MPG334401,"Printed and integrated circuits, semiconductors and printed circuit assemblies"
+,,MPG334409,Other electronic components
+,,MPG334A05,"Medical devices (x 1,000)"
+,,MPG334A06,"Measuring, control and scientific instruments (x 1,000)"
+M3350,"Electrical equipment, appliances and components",MPG335101,Electric lamp bulbs and tubes
+,,MPG335102,Lighting fixtures
+,,MPG335203,Small electric appliances
+,,MPG335204,Major appliances
+,,MPG335301,Transformers
+,,MPG335302,Electric motors and generators
+,,MPG335303,"Switchgear, switchboard, relays and industrial control apparatus"
+,,MPG335901,Batteries
+,,MPG335902,Communication and energy wire and cable
+,,MPG335903,Wiring devices
+,,MPG335909,Other electrical equipment and components
+M336A,Transportation equipment,MPG336111,Passenger cars
+,,MPG336112,"Light-duty trucks, vans and sport utility vehicles"
+,,MPG336120,Medium and heavy-duty trucks and chassis
+,,MPG336201,Buses
+,,MPG336202,Motor vehicle bodies and special purpose motor vehicles
+,,MPG336203,Freight and utility trailers
+,,MPG336204,"Motor homes, travel trailers and campers"
+,,MPG3364A0,Aircraft and aircraft engines
+,,MPG3364A0,Aircraft and aircraft engines
+,,MPG336403,Aircraft parts and equipment
+,,MPG336501,Railroad rolling stocks
+,,MPG336502,Parts for railroad rolling stocks
+,,MPG336601,Ships
+,,MPG336602,Boats
+,,MPG336900,Other transportation equipment and related parts
+,,MPG336401,"Aircraft (x 1,000)"
+,,MPG336402,"Aircraft engines (x 1,000)"
+M3363,Motor vehicle parts,MPG336310,Motor vehicle gasoline engines and their parts
+,,MPG336320,Motor vehicle electrical and electronic equipment
+,,MPG336330,Motor vehicle steering and suspension components (except springs)
+,,MPG336340,Motor vehicle brakes and brake systems
+,,MPG336350,Motor vehicle transmission and power train parts
+,,MPG336360,Vehicle seats and seat parts; interior trim for motor vehicles
+,,MPG336370,Motor vehicle metal stamping
+,,MPG336390,Other motor vehicle parts
+M3370,Furniture and related products,MPG337101,Wood kitchen cabinets and counter tops
+,,MPG337102,Household furniture
+,,MPG337103,Institutional furniture
+,,MPG337203,Office furniture
+,,MPG337204,Office and store fixtures
+,,MPG337901,Mattresses and foundations
+,,MPG337902,Blinds and shades
+M3B00,Other manufactured products and custom work,MPG339100,"Medical, dental and personal safety supplies, instruments and equipment"
+,,MPG339901,Jewellery and silverware
+,,MPG339902,Sporting and athletic goods
+,,MPG339903,Toys and games
+,,MPG339904,Other stationery supplies
+,,MPG339905,Signs
+,,MPG339909,Other miscellaneous goods
+,,MPS3X0000,"Custom work, other manufacturing production services"
+M4100,Wholesale margins and commissions,MPS410001,Wholesale margins
+,,MPS410002,Wholesale trade commissions
+,,MPS411000,"Wholesale margins - farm products (x 1,000)"
+,,MPS412000,"Wholesale margins - petroleum and petroleum products (x 1,000)"
+,,MPS413000,"Wholesale margins - food, beverages and tobacco products (x 1,000)"
+,,MPS414000,"Wholesale margins - personal and household goods (x 1,000)"
+,,MPS415000,"Wholesale margins - motor vehicles, motor vehicle parts and accessories (x 1,000)"
+,,MPS416000,"Wholesale margins - building materials and supplies (x 1,000)"
+,,MPS417000,"Wholesale margins - machinery, equipment and supplies (x 1,000)"
+,,MPS418000,"Wholesale margins - miscellaneous products (x 1,000)"
+M4A00,"Retail margins, sales of used goods and commissions",MPS4A0001,Retail margins
+,,MPS4A0002,Used motor vehicles
+,,MPS4A0003,Other used consumer goods
+,,MPS4A0004,Retail trade commissions
+,,MPS441000,"Retail margins - motor vehicles and parts (x 1,000)"
+,,MPS442000,"Retail margins - furniture and home furnishings (x 1,000)"
+,,MPS443000,"Retail margins - electronics and appliances (x 1,000)"
+,,MPS444000,"Retail margins - building materials, garden equipment and supplies (x 1,000)"
+,,MPS445000,"Retail margins - food and beverages (x 1,000)"
+,,MPS446000,"Retail margins - health and personal care products (x 1,000)"
+,,MPS447000,"Retail margins - automotive fuels (x 1,000)"
+,,MPS448000,"Retail margins - clothing and clothing accessories (x 1,000)"
+,,MPS451000,"Retail margins - sporting and leisure products (x 1,000)"
+,,MPS453000,"Retail margins - miscellaneous products (x 1,000)"
+,,MPS454310,"Retail margins - household fuels (x 1,000)"
+,,MPS484004,"Truck transportation services for general freight (x 1,000)"
+M4B00,Transportation and related services,MPS481001,Air passenger transportation services
+,,MPS481002,Air freight transportation services
+,,MPS481003,Air specialty services
+,,MPS482001,Rail passenger transportation services
+,,MPS482002,Rail freight transportation services
+,,MPS483001,Water passenger transportation services
+,,MPS483002,Water freight transportation services
+,,MPS484001,Moving services (used goods)
+,,MPS484004,General freight truck transportation services
+,,MPS484005,Specialized freight truck transportation services
+,,MPS485100,Urban transit services
+,,MPS48A001,Interurban and rural bus passenger transportation services
+,,MPS48A002,School bus service
+,,MPS48A003,Other transit and ground passenger transportation services
+,,MPS48A004,Scenic and sightseeing tour services
+,,MPS485300,Taxi and limousine services
+,,MPS486200,Transportation of natural gas by pipeline
+,,MPS486A00,Transportation of crude oil and other commodities by pipeline
+,,MPS488001,Air transportation support services
+,,MPS488002,Aircraft maintenance and repair services
+,,MPS488003,"Rail transportation support, maintenance and repair services"
+,,MPS488004,"Water transportation support, maintenance and repair services"
+,,MPS488005,Road transportation support services
+,,MPS488006,Freight transportation arrangement and customs brokering services
+,,MPS488009,Other transportation support services
+,,MPS49A000,"Postal, courier, parcels and messenger delivery services"
+,,MPS49A000,"Postal, courier, parcels and messenger delivery services"
+,,MPS493001,Grain storage
+,,MPS493002,Warehousing and storage services (except grain storage)
+,,MPS491000,Postal services
+,,MPS492000,"Courier, parcel, and local messenger and delivery services"
+M51D0,Information and cultural services,MPS511112,Advertising space in newspapers
+,,MPS5111A4,Advertising space in periodicals and other published printed products
+,,MPS5111X0,"Licensing fees to distribute or reproduce published products, print and electronic"
+,,MPS5121A2,Motion picture and video production and related services
+,,MPS5121A3,Licensing fees to distribute or reproduce motion pictures and videos
+,,MPS512130,Admissions to motion picture film exhibitions
+,,MPS512202,Studio and audio recording services
+,,MPS512203,Licensing fees to distribute or reproduce music and audio works
+,,MPS515100,Advertising air time on radio
+,,MPS515A01,Advertising air time on television
+,,MPS515A02,Fees for the distribution of television and radio program channels
+,,MPS518000,"Data processing, hosting, and related services"
+,,MPS519001,Subscriptions to Internet sites and contents
+,,MPS519002,Advertising space on the Internet
+,,MPS519008,Other information services
+M51E0,Published and recorded media products,MPG511111,"Newspapers, print and electronic"
+,,MPG5111A1,"Periodicals, print and electronic"
+,,MPG5111A2,"Books, print and electronic"
+,,MPG5111A3,Other published products
+,,MPS5121A1,"Movies, television programs and videos"
+,,MPS512201,Music and audio works
+M5170,Telecommunications,MPS517001,Wired telephone services
+,,MPS517002,Wireless telephone services
+,,MPS517003,"Cable, satellite and other program distribution services"
+,,MPS517004,Internet access services
+M52C0,Depository credit intermediation,MPS521000,Central banking services
+,,MPS522130,Local credit union services - explicit charges (fees)
+,,MPS5221A0,Banking and other depository credit intermediation services - explicit charges
+,,MPS52X001,Deposit intermediation services indirectly measured (FISIM)
+,,MPS52X002,Residential mortgage intermediation services indirectly measured (FISIM)
+,,MPS52X003,Other loan intermediation services indirectly measured (FISIM)
+M5F00,Other finance and insurance,MPS522200,Non-depository credit intermediation services - explicit charges (fees)
+,,MPS522300,Other services related to credit intermediation
+,,MPS523001,Investment banking services
+,,MPS523002,Security brokerage and securities dealing services
+,,MPS523003,Portfolio management services
+,,MPS523004,Investment counselling services
+,,MPS523009,Holding company services and other financial investment and related activities
+,,MPS524101,Life insurance services
+,,MPS524102,Accident and sickness insurance services
+,,MPS524103,Automotive insurance services
+,,MPS524104,Property insurance services
+,,MPS524105,Liability and other property and casualty insurance services
+,,MPS524200,Brokerage and other insurance related services
+,,MPS526111,Trusteed pension fund services
+,,MPS526A00,Mutual funds (cost of service) and other similar services
+,,IMS551001,Holding company services (imputed)
+M53D0,"Real estate, rental and leasing and rights to non-financial intangible assets",MPS531101,Rental of residential real estate
+,,MPS531102,Rental of non-residential real estate
+,,MPS531A00,Services related to real estate
+,,MPS532100,Motor vehicle rental and leasing services
+,,MPS532A01,Computer equipment rental and leasing services
+,,MPS532A02,Office machinery and equipment rental and leasing services (except computer equipment)
+,,MPS532A03,Commercial and industrial machinery and equipment renting and leasing services
+,,MPS532A09,Other goods rental and leasing services
+,,MPS533000,Rights to non-financial intangible assets
+M53C0,Imputed rental of owner-occupied dwellings,IMS5311A0,Imputed rental of owner-occupied dwellings
+M541E,Professional services (except software and research and development),MPS541100,Legal services
+,,MPS541200,Accounting and related services
+,,MPS541300,"Architectural, engineering and related services"
+,,MPS541400,Specialized design services
+,,MPS541503,Computer systems design and related services (except software development)
+,,MPS541600,"Management, scientific and technical consulting services"
+,,MPS541800,"Advertising, public relations and related services"
+,,MPS541901,Photographic services
+,,MPS541902,Veterinary services
+,,MPS541909,"Other professional, scientific and technical services"
+M5E00,Software,MPS511200,General purpose software
+,,MPS541501,Custom software design and development services
+,,IMS541502,Own-account software design and development services
+M5417,Research and development,MPS541701,Research and development services
+,,IMS541702,Own-account research and development (except software development)
+M5G00,"Administrative and support, head office, waste management and remediation services",IMS551002,Head office services (imputed)
+,,MPS561100,Office administrative services
+,,MPS561300,Employment services
+,,MPS561400,Business support services
+,,MPS561500,Travel arrangement and reservation services
+,,MPS561600,Investigation and security services
+,,MPS561700,Services to buildings and dwellings
+,,MPS561A00,Facilities and other support services
+,,MPS562000,Waste management and remediation services
+M6100,Education services,MPS610001,Tuition and similar fees for elementary and secondary schools
+,,MPS610002,Tuition and similar fees for colleges and C.E.G.E.P.s
+,,MPS610003,Tuition and similar fees for universities
+,,MPS610004,"Tuition and similar fees for trade, technical and professional training"
+,,MPS610009,Other educational training and services
+M6200,Health and social assistance services,MPS621100,Physician services
+,,MPS621200,Dental services
+,,MPS621A01,Other health practitioner services
+,,MPS621A02,Medical and diagnostic laboratory services
+,,MPS621A03,Ambulance services
+,,MPS622000,Hospital services (fees)
+,,MPS623000,Nursing and residential care services
+,,MPS624001,Child day-care services
+,,MPS62A000,Other ambulatory health care services and social assistance services
+M7100,"Arts, entertainment and recreation services",MPS71A001,Admissions to live sporting events
+,,MPS71A002,Admissions to live performing arts performances
+,,MPS71A003,Sport and performing arts event organization services
+,,MPS71A004,Career management and representation services of public figures
+,,MPS71A005,"Contract production of live performances, events and copyrighted works"
+,,MPS71A007,Technical artistic services
+,,MPS71A008,Heritage institution services
+,,MPS713A00,Amusement and recreation services
+,,MPS713200,Gambling (net wagers)
+,,MPS71A009,"Broadcast and other media rights (x 1,000)"
+,,MPS51AX00,"Licensing of rights to use literary works and artistic works (except software licensing) (x 1,000)"
+M7200,Accommodation and food services,MPS721100,Room or unit accommodation services for travellers
+,,MPS721A01,Recreational vehicle parks and recreational camp services
+,,MPS721A02,Rooming and boarding services
+,,MPS722001,Prepared meals
+,,MPS722002,Alcoholic beverages for immediate consumption
+M8100,Other services,MPS811100,Motor vehicle repair and maintenance services
+,,MPS811A00,Other repair and maintenance services
+,,MPS812200,Funeral services
+,,MPS812300,Laundry and dry-cleaning services
+,,MPS812A01,Hair care and esthetic services
+,,MPS812A02,Parking services
+,,MPS812A09,Other personal and personal care services
+,,MPS813000,Other membership services
+,,MPS814001,Babysitting services
+,,MPS814002,Private household services (except babysitting)
+M9A00,Sales of other services by Non-Profit Institutions Serving Households,MPS9A0000,Sales of other services by Non-Profit Institutions Serving Households
+M9B00,Sales of other government services,MPS9B0000,Sales of other government services
+F1000,Fictive materials,FIC110000,Repair and maintenance
+,,FIC120000,Operating supplies
+,,FIC130000,Office supplies
+F2000,Fictive services,FIC210000,"Advertising, promotion, meals and entertainment"
+,,FIC220000,"Travel, meetings and conventions"
+F3000,Transportation margins,FIC300000,Transportation margins
+N0000,Services provided by Non-Profit Institutions Serving Households,NNP610000,Educational services provided by Non-Profit Institutions Serving Households
+,,NNP621000,Ambulatory health care services provided by Non-Profit Institutions Serving Households
+,,NNP624000,Social assistance services provided by Non-Profit Institutions Serving Households
+,,NNP710000,"Arts, entertainment and recreation services provided by Non-Profit Institutions Serving Households"
+,,NNP813100,Religious services
+,,NNP813A01,"Grant-making, civic, and professional and similar organization services"
+,,NNP813930,Labour organization membership services
+,,NNP813940,Political organization services
+,,NNP999999,Other services provided by Non-Profit Institutions Serving Households
+G6100,Education services provided by government sector,NGS611100,Elementary and secondary school services provided by governments
+,,NGS611200,Community college and C.E.G.E.P services provided by governments
+,,NGS611300,University services provided by governments
+,,NGS611A00,Other educational services provided by governments
+G6200,Health services provided by government sector,NGS622000,Hospital services provided by governments
+,,NGS623000,Residential care facility services provided by governments
+G9110,Other federal government services,NGS911100,Defence services
+,,NGS911A00,Other federal government services
+G9120,Other provincial and territorial government services,NGS912000,Other provincial and territorial government services
+G9130,Other municipal government services,NGS913000,Other municipal government services
+G9140,Other aboriginal government services,NGS914000,Other aboriginal government services
+P1000,Taxes on products,PRM100000,Taxes on products
+P2000,Subsidies on products,PRM200000,Subsidies on products
+P3000,Subsidies on production,PRM300000,Subsidies on production
+P4000,Taxes on production,PRM400000,Taxes on production
+P5000,Wages and salaries,PRM500000,Wages and salaries
+P6000,Supplementary labour income,PRM600000,Supplementary labour income
+P7000,Mixed income,PRM700000,Mixed income
+P8000,Other operating surplus,PRM800000,Other operating surplus
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+About government,,,
+Contact us,,,
+Departments and agencies,,,
+Public service and military,,,
+News,,,
+"Treaties, laws and regulations",,,
+Government-wide reporting,,,
+Prime Minister,,,
+How government works,,,
+Open government,,,
+About this site,,,
+Social media,,,
+Mobile applications,,,
+About Canada.ca,,,
+Terms and conditions,,,
+Privacy,,,

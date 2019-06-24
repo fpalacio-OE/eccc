@@ -1,0 +1,269 @@
+sector_cd,PRODUCT,ProductCode,sector_cd_new
+MCHEMB,"Ammonia and chemical fertilizers (x 1,000)",MPG325301,MCHEMI
+MCHEMB,"Architectural, engineering and related services (x 1,000)",MPS541300,MCHEMI
+MCHEMB,"Basic organic chemicals, n.e.c. (x 1,000)",MPG325105,MCHEMI
+MCHEMB,"Boilers, tanks and heavy gauge metal containers (x 1,000)",MPG332402,MCHEMI
+MCHEMB,"Business support services (x 1,000)",MPS561400,MCHEMI
+MCHEMB,"Chemical products, n.e.c. (x 1,000)",MPG325900,MCHEMI
+MCHEMB,"Commercial and industrial machinery and equipment (except office equipment) rental and leasing services (x 1,000)",MPS532A03,MCHEMI
+MCHEMB,"Custom work manufacturing services (except printing, finishing textiles and metals) (x 1,000)",MPS3X0000,MCHEMI
+MCHEMB,"Diesel and biodiesel fuels (x 1,000)",ENE324112,MCHEMI
+MCHEMB,"Dyes and pigments (x 1,000)",MPG325103,MCHEMD
+MCHEMB,"Electricity (x 1,000)",ENE221100,MCHEMI
+MCHEMB,"Flour and other grain mill products (x 1,000)",MPG311204,MCHEMI
+MCHEMB,"Gasoline (x 1,000)",ENE324111,MCHEMI
+MCHEMB,"Grain and oilseed products, n.e.c. (x 1,000)",MPG311208,MCHEMI
+MCHEMB,"Head office services (imputed) (x 1,000)",IMS551002,MCHEMI
+MCHEMB,"Industrial gases (x 1,000)",MPG325102,MCHEMG
+MCHEMB,"Licensing of rights to non-financial produced intangible assets (except software and other copyright licensing) (x 1,000)",MPS533000,MCHEMI
+MCHEMB,"Logging, mining and construction machinery and equipment (x 1,000)",MPG333102,MCHEMI
+MCHEMB,"Lubricants and other petroleum refinery products (x 1,000)",MPG3241A8,MCHEMI
+MCHEMB,"Management, scientific and technical consulting services (x 1,000)",MPS541600,MCHEMI
+MCHEMB,"Motor vehicle rental and leasing services (x 1,000)",MPS532100,MCHEMI
+MCHEMB,"Natural gas liquids and related products (x 1,000)",ENE211103,MCHEMI
+MCHEMB,"Non-metallic mineral products, n.e.c. (x 1,000)",MPG327A09,MCHEMI
+MCHEMB,"Office administrative services (x 1,000)",MPS561100,MCHEMI
+MCHEMB,"Other basic inorganic chemicals (x 1,000)",MPG325106,MCHEMI
+MCHEMB,"Other industry-specific machinery (x 1,000)",MPG333200,MCHEMI
+MCHEMB,"Own-account research and development (except software development) (x 1,000)",IMS541702,MCHEMI
+MCHEMB,"Own-account software design and development services (x 1,000)",IMS541502,MCHEMI
+MCHEMB,"Paints, coatings and adhesive products (x 1,000)",MPG325500,MCHEMI
+MCHEMB,"Petrochemicals (x 1,000)",MPG325101,MCHEMP
+MCHEMB,"Pharmaceutical and medicinal products (x 1,000)",MPG325400,MCHEMI
+MCHEMB,"Plastic resins (x 1,000)",MPG325201,MCHEMI
+MCHEMB,"Rental of non-residential real estate (x 1,000)",MPS531102,MCHEMI
+MCHEMB,"Repair and maintenance services (except for buildings and motor vehicles) (x 1,000)",MPS811A00,MCHEMI
+MCHEMB,"Rooming and boarding services (x 1,000)",MPS721A02,MCHEMI
+MCHEMB,"Soaps and cleaning compounds (x 1,000)",MPG325601,MCHEMI
+MCHEMB,"Wholesale margins - miscellaneous products (x 1,000)",MPS418000,MCHEMI
+MCHEMB,"Wholesale trade commissions (x 1,000)",MPS410002,MCHEMI
+MCHEMB,"Basic and semi-finished products of aluminum and alloys (x 1,000)",MPG331303,MCHEMI
+MCHEMB,"Perfumes and toiletries (x 1,000)",MPG325602,MCHEMI
+MCHEMB,"Prepared meals (x 1,000)",MPS722001,MCHEMI
+MCHEMB,"Truck transportation services for general freight (x 1,000)",MPS484004,MCHEMI
+MCHEMB,"Non-metallic minerals (except diamonds) (x 1,000)",MPG21239C,MCHEMI
+MCHEMB,"Contract printing services for publishers (x 1,000)",MPS323003,MCHEMI
+MCHEMB,"Textile and fabric finishing and coating services (x 1,000)",MPS31A006,MCHEMI
+MCHEMB,"Asphalt (except natural) and asphalt products (x 1,000)",MPG3241A1,MCHEMI
+MCHEMB,"Basic and semi-finished products of non-ferrous metals and alloys (except aluminum) (x 1,000)",MPG331406,MCHEMI
+MCHEMB,"Heavy fuel oils (x 1,000)",ENE324115,MCHEMI
+MCHEMB,"Jet fuel (x 1,000)",ENE324114,MCHEMI
+MCHEMB,"Other animal feed (x 1,000)",MPG311109,MCHEMI
+MCHEMB,"Other miscellaneous manufactured products (x 1,000)",MPG339909,MCHEMI
+MCHEMB,"Steam and heated or cooled air or water (x 1,000)",ENE221303,MCHEMI
+MCHEMB,"Solid fuel products, n.e.c. (x 1,000)",ENE32A000,MCHEMI
+MCHEMB,"Other food products, n.e.c. (x 1,000)",MPG311909,MCHEMI
+MMETA,"Architectural, engineering and related services (x 1,000)",MPS541300,MMETAO
+MMETA,"Basic and semi-finished products of aluminum and alloys (x 1,000)",MPG331303,MMETAP
+MMETA,"Custom work manufacturing services (except printing, finishing textiles and metals) (x 1,000)",MPS3X0000,MMETAO
+MMETA,"Head office services (imputed) (x 1,000)",IMS551002,MMETAO
+MMETA,"Management, scientific and technical consulting services (x 1,000)",MPS541600,MMETAO
+MMETA,"Office administrative services (x 1,000)",MPS561100,MMETAO
+MMETA,"Other industry-specific machinery (x 1,000)",MPG333200,MMETAO
+MMETA,"Own-account research and development (except software development) (x 1,000)",IMS541702,MMETAO
+MMETA,"Prefabricated metal buildings and components (x 1,000)",MPG332301,MMETAO
+MMETA,"Repair and maintenance services (except for buildings and motor vehicles) (x 1,000)",MPS811A00,MMETAO
+MMETA,"Unwrought aluminum including alloys (x 1,000)",MPG331302,MMETAP
+MMETA,"Waste and scrap of non-ferrous metals (x 1,000)",MPG331X02,MMETAO
+MMETA,"Wholesale margins - miscellaneous products (x 1,000)",MPS418000,MMETAO
+MMETA,"Builders, motor vehicle and other hardware (x 1,000)",MPG332500,MMETAO
+MMETA,"Business support services (x 1,000)",MPS561400,MMETAO
+MMETA,"Electricity (x 1,000)",ENE221100,MMETAO
+MMETA,"Other unwrought non-ferrous metals including alloys (x 1,000)",MPG331404,MMETAO
+MMETA,"Own-account software design and development services (x 1,000)",IMS541502,MMETAO
+MMETA,"Plastic and foam building and construction materials (x 1,000)",MPG326103,MMETAO
+MMETA,"Boilers, tanks and heavy gauge metal containers (x 1,000)",MPG332402,MMETAO
+MMETA,"Commercial and service industry machinery (x 1,000)",MPG333300,MMETAO
+MMETA,"Fabricated steel plates and other fabricated structural metal (x 1,000)",MPG332302,MMETAO
+MMETA,"Threaded metal fasteners and other turned metal products including automotive (x 1,000)",MPG332700,MMETAO
+MMETA,"Bauxite and aluminum oxide (x 1,000)",MPG331301,MMETAP
+MMETA,"Commercial and industrial machinery and equipment (except office equipment) rental and leasing services (x 1,000)",MPS532A03,MMETAO
+MMETA,"Licensing of rights to non-financial produced intangible assets (except software and other copyright licensing) (x 1,000)",MPS533000,MMETAO
+MMETA,"Motor vehicle rental and leasing services (x 1,000)",MPS532100,MMETAO
+MMETA,"Rental of non-residential real estate (x 1,000)",MPS531102,MMETAO
+MMETA,"Wholesale margins - building materials and supplies (x 1,000)",MPS416000,MMETAO
+MMETA,"Non-ferrous metal castings (x 1,000)",MPG331502,MMETAO
+MMETA,"Other basic inorganic chemicals (x 1,000)",MPG325106,MMETAO
+MMETF,"Architectural, engineering and related services (x 1,000)",MPS541300,MMETFN
+MMETF,"Business support services (x 1,000)",MPS561400,MMETFN
+MMETF,"Commercial and industrial machinery and equipment (except office equipment) rental and leasing services (x 1,000)",MPS532A03,MMETFN
+MMETF,"Custom work manufacturing services (except printing, finishing textiles and metals) (x 1,000)",MPS3X0000,MMETFN
+MMETF,"Ferrous metal castings (x 1,000)",MPG331501,MMETFF
+MMETF,"Head office services (imputed) (x 1,000)",IMS551002,MMETFN
+MMETF,"Management, scientific and technical consulting services (x 1,000)",MPS541600,MMETFN
+MMETF,"Non-ferrous metal castings (x 1,000)",MPG331502,MMETFN
+MMETF,"Office administrative services (x 1,000)",MPS561100,MMETFN
+MMETF,"Own-account research and development (except software development) (x 1,000)",IMS541702,MMETFN
+MMETF,"Rental of non-residential real estate (x 1,000)",MPS531102,MMETFN
+MMETF,"Repair and maintenance services (except for buildings and motor vehicles) (x 1,000)",MPS811A00,MMETFN
+MMETF,"Wholesale margins - miscellaneous products (x 1,000)",MPS418000,MMETFN
+MMETF,"Wire and other rolled and drawn steel products (x 1,000)",MPG331202,MMETFN
+MMETF,"Hand tools, kitchen utensils and cutlery (except precious metal) (x 1,000)",MPG332A01,MMETFN
+MMETF,"Licensing of rights to non-financial produced intangible assets (except software and other copyright licensing) (x 1,000)",MPS533000,MMETFN
+MMETF,"Metalworking machinery and industrial moulds (x 1,000)",MPG333500,MMETFN
+MMETF,"Other miscellaneous general-purpose machinery (x 1,000)",MPG333909,MMETFN
+MMETF,"Prepared meals (x 1,000)",MPS722001,MMETFN
+MMETF,"Waste and scrap of iron and steel (x 1,000)",MPG331X01,MMETFN
+MMETF,"Own-account software design and development services (x 1,000)",IMS541502,MMETFN
+MMETF,"Threaded metal fasteners and other turned metal products including automotive (x 1,000)",MPG332700,MMETFN
+MMETF,"Iron and steel basic shapes and ferro-alloy products (x 1,000)",MPG331100,MMETFN
+MMETF,"Legal services (x 1,000)",MPS541100,MMETFN
+MMETF,"Other industry-specific machinery (x 1,000)",MPG333200,MMETFN
+MMETF,"Retail margins - miscellaneous products (x 1,000)",MPS453000,MMETFN
+MMETF,"Unwrought aluminum including alloys (x 1,000)",MPG331302,MMETFN
+MMETF,"Wholesale margins - building materials and supplies (x 1,000)",MPS416000,MMETFN
+MMETF,"Non-metallic mineral products, n.e.c. (x 1,000)",MPG327A09,MMETFN
+MNMAO,"Architectural, engineering and related services (x 1,000)",MPS541300,MNMO
+MNMAO,"Business support services (x 1,000)",MPS561400,MNMO
+MNMAO,"Cement (x 1,000)",MPG327301,MNMO
+MNMAO,"Chemical products, n.e.c. (x 1,000)",MPG325900,MNMO
+MNMAO,"Clay and ceramic products and refractories (x 1,000)",MPG327A01,MNMY
+MNMAO,"Commercial and industrial machinery and equipment (except office equipment) rental and leasing services (x 1,000)",MPS532A03,MNMO
+MNMAO,"Commercial and service industry machinery (x 1,000)",MPG333300,MNMO
+MNMAO,"Concrete products (x 1,000)",MPG327303,MNMO
+MNMAO,"Custom work manufacturing services (except printing, finishing textiles and metals) (x 1,000)",MPS3X0000,MNMO
+MNMAO,"Glass (including automotive), glass products and glass containers (x 1,000)",MPG327A02,MNMG
+MNMAO,"Licensing of rights to non-financial produced intangible assets (except software and other copyright licensing) (x 1,000)",MPS533000,MNMO
+MNMAO,"Lime and gypsum products (x 1,000)",MPG327A04,MNML
+MNMAO,"Management, scientific and technical consulting services (x 1,000)",MPS541600,MNMO
+MNMAO,"Metal windows and doors (x 1,000)",MPG332303,MNMO
+MNMAO,"Non-metallic mineral products, n.e.c. (x 1,000)",MPG327A09,MNMO
+MNMAO,"Office administrative services (x 1,000)",MPS561100,MNMO
+MNMAO,"Office furniture (x 1,000)",MPG337203,MNMO
+MNMAO,"Other animal feed (x 1,000)",MPG311109,MNMO
+MNMAO,"Other architectural metal products (x 1,000)",MPG332A05,MNMO
+MNMAO,"Other industry-specific machinery (x 1,000)",MPG333200,MNMO
+MNMAO,"Own-account research and development (except software development) (x 1,000)",IMS541702,MNMO
+MNMAO,"Paints, coatings and adhesive products (x 1,000)",MPG325500,MNMO
+MNMAO,"Ready-mixed concrete (x 1,000)",MPG327302,MNMO
+MNMAO,"Reconstituted wood products (x 1,000)",MPG321203,MNMO
+MNMAO,"Rental of non-residential real estate (x 1,000)",MPS531102,MNMO
+MNMAO,"Repair and maintenance services (except for buildings and motor vehicles) (x 1,000)",MPS811A00,MNMO
+MNMAO,"Sand, gravel, clay, and refractory minerals (x 1,000)",MPG212320,MNMO
+MNMAO,"Stone (x 1,000)",MPG212310,MNMO
+MNMAO,"Wholesale margins - building materials and supplies (x 1,000)",MPS416000,MNMO
+MNMAO,"Wholesale margins - miscellaneous products (x 1,000)",MPS418000,MNMO
+MNMAO,"Wood products, n.e.c. (x 1,000)",MPG321908,MNMO
+MNMAO,"Fabricated steel plates and other fabricated structural metal (x 1,000)",MPG332302,MNMO
+MNMAO,"Head office services (imputed) (x 1,000)",IMS551002,MNMO
+MNMAO,"Material handling equipment (x 1,000)",MPG333902,MNMO
+MNMAO,"Non-metallic minerals (except diamonds) (x 1,000)",MPG21239C,MNMO
+MNMAO,"Other converted paper products (x 1,000)",MPG322209,MNMO
+MNMAO,"Other miscellaneous manufactured products (x 1,000)",MPG339909,MNMO
+MNMAO,"Own-account software design and development services (x 1,000)",IMS541502,MNMO
+MNMAO,"Rooming and boarding services (x 1,000)",MPS721A02,MNMO
+MNMAO,"Wood kitchen cabinets and counter tops (x 1,000)",MPG337101,MNMO
+MNMAO,"Motor vehicle rental and leasing services (x 1,000)",MPS532100,MNMO
+MNMAO,"Other basic inorganic chemicals (x 1,000)",MPG325106,MNMO
+MNMAO,"Waste and scrap of glass (x 1,000)",MPG327A03,MNMG
+MNMAO,"Bauxite and aluminum oxide (x 1,000)",MPG331301,MNMO
+MNMAO,"Iron and steel basic shapes and ferro-alloy products (x 1,000)",MPG331100,MNMO
+MNMAO,"Jewellery and silverware (x 1,000)",MPG339901,MNMO
+MNMAO,"Plastic products, n.e.c. (x 1,000)",MPG326109,MNMO
+MNMAO,"Plastic resins (x 1,000)",MPG325201,MNMO
+MNMAO,"Printed products (x 1,000)",MPG323001,MNMO
+MNMAO,"Retail margins - miscellaneous products (x 1,000)",MPS453000,MNMO
+MNMAO,"Soaps and cleaning compounds (x 1,000)",MPG325601,MNMO
+MNMAO,"Wholesale trade commissions (x 1,000)",MPS410002,MNMO
+MNMAO,"Plastic and foam building and construction materials (x 1,000)",MPG326103,MNMO
+MNMC,"Architectural, engineering and related services (x 1,000)",MPS541300,MNMCO
+MNMC,"Asphalt (except natural) and asphalt products (x 1,000)",MPG3241A1,MNMCO
+MNMC,"Cement (x 1,000)",MPG327301,MNMCC
+MNMC,"Chemical products, n.e.c. (x 1,000)",MPG325900,MNMCO
+MNMC,"Commercial and industrial machinery and equipment (except office equipment) rental and leasing services (x 1,000)",MPS532A03,MNMCO
+MNMC,"Concrete products (x 1,000)",MPG327303,MNMCO
+MNMC,"Custom work manufacturing services (except printing, finishing textiles and metals) (x 1,000)",MPS3X0000,MNMCO
+MNMC,"Fabricated steel plates and other fabricated structural metal (x 1,000)",MPG332302,MNMCO
+MNMC,"Head office services (imputed) (x 1,000)",IMS551002,MNMCO
+MNMC,"Legal services (x 1,000)",MPS541100,MNMCO
+MNMC,"Licensing of rights to non-financial produced intangible assets (except software and other copyright licensing) (x 1,000)",MPS533000,MNMCO
+MNMC,"Logging, mining and construction machinery and equipment (x 1,000)",MPG333102,MNMCO
+MNMC,"Management, scientific and technical consulting services (x 1,000)",MPS541600,MNMCO
+MNMC,"Non-metallic mineral products, n.e.c. (x 1,000)",MPG327A09,MNMCO
+MNMC,"Office administrative services (x 1,000)",MPS561100,MNMCO
+MNMC,"Other architectural metal products (x 1,000)",MPG332A05,MNMCO
+MNMC,"Other industry-specific machinery (x 1,000)",MPG333200,MNMCO
+MNMC,"Own-account research and development (except software development) (x 1,000)",IMS541702,MNMCO
+MNMC,"Own-account software design and development services (x 1,000)",IMS541502,MNMCO
+MNMC,"Paints, coatings and adhesive products (x 1,000)",MPG325500,MNMCO
+MNMC,"Plastic resins (x 1,000)",MPG325201,MNMCO
+MNMC,"Prepared meals (x 1,000)",MPS722001,MNMCO
+MNMC,"Ready-mixed concrete (x 1,000)",MPG327302,MNMCR
+MNMC,"Rental of non-residential real estate (x 1,000)",MPS531102,MNMCO
+MNMC,"Repair and maintenance services (except for buildings and motor vehicles) (x 1,000)",MPS811A00,MNMCO
+MNMC,"Rooming and boarding services (x 1,000)",MPS721A02,MNMCO
+MNMC,"Sand, gravel, clay, and refractory minerals (x 1,000)",MPG212320,MNMCO
+MNMC,"Wholesale margins - building materials and supplies (x 1,000)",MPS416000,MNMCO
+MNMC,"Wholesale trade commissions (x 1,000)",MPS410002,MNMCO
+MNMC,"Business support services (x 1,000)",MPS561400,MNMCO
+MNMC,"Clay and ceramic products and refractories (x 1,000)",MPG327A01,MNMCO
+MNMC,"Iron and steel basic shapes and ferro-alloy products (x 1,000)",MPG331100,MNMCO
+MNMC,"Motor vehicle bodies and special purpose motor vehicles (x 1,000)",MPG336202,MNMCO
+MNMC,"Other miscellaneous manufactured products (x 1,000)",MPG339909,MNMCO
+MNMC,"Switchgear, switchboards, relays and industrial control apparatus (x 1,000)",MPG335303,MNMCO
+MNMC,"Waste and scrap of glass (x 1,000)",MPG327A03,MNMCO
+MNMC,"Truck transportation services for general freight (x 1,000)",MPS484004,MNMCO
+MNMC,"Truck transportation services for specialized freight (x 1,000)",MPS484005,MNMCO
+MNMC,"Stone (x 1,000)",MPG212310,MNMCO
+MPETAO,"Architectural, engineering and related services (x 1,000)",MPS541300,MPETO
+MPETAO,"Asphalt (except natural) and asphalt products (x 1,000)",MPG3241A1,MPETA
+MPETAO,"Business support services (x 1,000)",MPS561400,MPETO
+MPETAO,"Chemical products, n.e.c. (x 1,000)",MPG325900,MPETO
+MPETAO,"Coke and other coke oven products (x 1,000)",ENE3241A2,MPETO
+MPETAO,"Commercial and industrial machinery and equipment (except office equipment) rental and leasing services (x 1,000)",MPS532A03,MPETO
+MPETAO,"Concrete products (x 1,000)",MPG327303,MPETO
+MPETAO,"Custom work manufacturing services (except printing, finishing textiles and metals) (x 1,000)",MPS3X0000,MPETO
+MPETAO,"Licensing of rights to non-financial produced intangible assets (except software and other copyright licensing) (x 1,000)",MPS533000,MPETO
+MPETAO,"Lubricants and other petroleum refinery products (x 1,000)",MPG3241A8,MPETO
+MPETAO,"Management, scientific and technical consulting services (x 1,000)",MPS541600,MPETO
+MPETAO,"Non-metallic mineral products, n.e.c. (x 1,000)",MPG327A09,MPETO
+MPETAO,"Office administrative services (x 1,000)",MPS561100,MPETO
+MPETAO,"Other industry-specific machinery (x 1,000)",MPG333200,MPETO
+MPETAO,"Own-account research and development (except software development) (x 1,000)",IMS541702,MPETO
+MPETAO,"Own-account software design and development services (x 1,000)",IMS541502,MPETO
+MPETAO,"Paints, coatings and adhesive products (x 1,000)",MPG325500,MPETO
+MPETAO,"Paper (except newsprint) (x 1,000)",MPG322102,MPETO
+MPETAO,"Rental of non-residential real estate (x 1,000)",MPS531102,MPETO
+MPETAO,"Repair and maintenance services (except for buildings and motor vehicles) (x 1,000)",MPS811A00,MPETO
+MPETAO,"Rooming and boarding services (x 1,000)",MPS721A02,MPETO
+MPETAO,"Wholesale margins - building materials and supplies (x 1,000)",MPS416000,MPETO
+MPETAO,"Stone (x 1,000)",MPG212310,MPETO
+MPETAO,"Wholesale margins - petroleum and petroleum products (x 1,000)",MPS412000,MPETO
+MPETAO,"Wholesale margins - miscellaneous products (x 1,000)",MPS418000,MPETO
+MPETAO,"Soaps and cleaning compounds (x 1,000)",MPG325601,MPETO
+MPETAO,"Head office services (imputed) (x 1,000)",IMS551002,MPETO
+MPETAO,"Sand, gravel, clay, and refractory minerals (x 1,000)",MPG212320,MPETO
+MPETAO,"Coal (x 1,000)",ENE212100,MPETO
+MPETAO,"Wholesale trade commissions (x 1,000)",MPS410002,MPETO
+MPETAO,"Solid fuel products, n.e.c. (x 1,000)",ENE32A000,MPETO
+MMETN,"Basic and semi-finished products of non-ferrous metals and alloys (except aluminum) (x 1,000)",MPG331406,MMETNR
+MMETN,"Custom work manufacturing services (except printing, finishing textiles and metals) (x 1,000)",MPS3X0000,MMETNA
+MMETN,"Electricity (x 1,000)",ENE221100,MMETNA
+MMETN,"Office administrative services (x 1,000)",MPS561100,MMETNA
+MMETN,"Other basic inorganic chemicals (x 1,000)",MPG325106,MMETNA
+MMETN,"Other unwrought non-ferrous metals including alloys (x 1,000)",MPG331404,MMETNA
+MMETN,"Own-account research and development (except software development) (x 1,000)",IMS541702,MMETNA
+MMETN,"Own-account software design and development services (x 1,000)",IMS541502,MMETNA
+MMETN,"Repair and maintenance services (except for buildings and motor vehicles) (x 1,000)",MPS811A00,MMETNA
+MMETN,"Unwrought nickel including alloys (x 1,000)",MPG331402,MMETNR
+MMETN,"Waste and scrap of non-ferrous metals (x 1,000)",MPG331X02,MMETNA
+MMETN,"Wholesale margins - miscellaneous products (x 1,000)",MPS418000,MMETNA
+MMETN,"Wire and other rolled and drawn steel products (x 1,000)",MPG331202,MMETNA
+MMETN,"Ammonia and chemical fertilizers (x 1,000)",MPG325301,MMETNA
+MMETN,"Architectural, engineering and related services (x 1,000)",MPS541300,MMETNA
+MMETN,"Commercial and industrial machinery and equipment (except office equipment) rental and leasing services (x 1,000)",MPS532A03,MMETNA
+MMETN,"Head office services (imputed) (x 1,000)",IMS551002,MMETNA
+MMETN,"Licensing of rights to non-financial produced intangible assets (except software and other copyright licensing) (x 1,000)",MPS533000,MMETNA
+MMETN,"Management, scientific and technical consulting services (x 1,000)",MPS541600,MMETNA
+MMETN,"Other industry-specific machinery (x 1,000)",MPG333200,MMETNA
+MMETN,"Plastic resins (x 1,000)",MPG325201,MMETNA
+MMETN,"Prepared meals (x 1,000)",MPS722001,MMETNA
+MMETN,"Rental of non-residential real estate (x 1,000)",MPS531102,MMETNA
+MMETN,"Unwrought precious metals including alloys (x 1,000)",MPG331403,MMETNR
+MMETN,"Rooming and boarding services (x 1,000)",MPS721A02,MMETNA
+MMETN,"Unwrought copper including alloys (x 1,000)",MPG331401,MMETNC
+MMETN,"Iron and steel basic shapes and ferro-alloy products (x 1,000)",MPG331100,MMETNA
+MMETN,"Chemical products, n.e.c. (x 1,000)",MPG325900,MMETNA
+MMETN,"Metal valves and pipe fittings (x 1,000)",MPG332A02,MMETNA
+MMETN,"Non-ferrous metal castings (x 1,000)",MPG331502,MMETNA
+MMETN,"Non-metallic mineral products, n.e.c. (x 1,000)",MPG327A09,MMETNA
