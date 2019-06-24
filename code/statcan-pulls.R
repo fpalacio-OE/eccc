@@ -308,6 +308,7 @@ final_cleaning <- function(final) {
     col <- i - 1
     final[rows, info := final[rows, ..col]]
   }
+  
   # final[info %like% "Electric power selling price over", info:=gsub("Electric power selling price", "",info)]
 
   # extract adjustment
@@ -336,8 +337,9 @@ final_cleaning <- function(final) {
   # name variables
   final[, new_prices := ifelse(prices == "Index", NA, prices)]
   final[cansimId == "2280064", info := paste3(info, memberNameEn2, sep = "-")]
-
-  final[!variable %like% "Taxes on income" & !info %like% "price indexes" & !memberNameEn3 %in% "Non-residential structures, machinery and equipment", new_var := tstrsplit(variable, ",", fixed = TRUE, keep = 1)]
+  final[industry %like% "Service-producing" | industry %like% "Industrial production", `:=`(info = industry, industry = NA)]
+  final[!variable %like% "Taxes on income" & !info %like% "price indexes" & !memberNameEn3 %in% "Non-residential structures, machinery and equipment", 
+        new_var := tstrsplit(variable, ",", fixed = TRUE, keep = 1)]
   final[variable %like% "Taxes on income", new_var := gsub("capital gains payable by", "cap gains-", variable)]
   final[info %like% "price indexes" | memberNameEn3 %in% "Non-residential structures, machinery and equipment" | cansimId %in% c("3850042", "3850033", "3850038","2820087"), new_var := variable]
 
