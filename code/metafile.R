@@ -3,6 +3,7 @@
 # By: Fabio Palacio
 # Use this to run the entire update for the ECCC database
 # To debug, open the relevant code files
+# Last updates : 6/24/19
 
 codeDir <- "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/eccc/code/"
 srcDir  <- "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/eccc/resources/"

@@ -254,11 +254,14 @@ final_cleaning <- function(final) {
 
   # recompose
   final <- final[is.na(Aggregation)]
+  misaggregated <- unique(final[frequencyCode != 12,cansimId])
+  warning(c('High frequency vars in ', misaggregated, ' were not aggregated. Series removed.'))
+  final <- final[frequencyCode == 12]
   final <- rbind(forsum, foravg, foreop, final[, c("Aggregation", "refPer") := NULL])
 
   # extract geography
 
-  geo_tag <- as.data.table(which(Vectorize(function(x) x %in% "Geography")(final), arr.ind = TRUE))
+  #geo_tag <- as.data.table(which(Vectorize(function(x) x %in% "Geography")(final), arr.ind = TRUE))
   final[, geography := memberNameEn]
 
   # extract industry

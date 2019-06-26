@@ -159,7 +159,7 @@ for (i in 1:length(finalvariables)) {
 # View(envcandbshort)
 
 setkey(envcandbshort, geography)
-listpath <- paste(srcDir, "shortdb.rds",sep="")
+listpath <- paste(srcDir, "shortdb.rds",sep ="")
 saveRDS(envcandbshort, eval(listpath))
 
 
@@ -1022,9 +1022,6 @@ y <- lapply(y, backextendgva)
 gva <- rbindlist(y)
 gva[, `gva - chained prices (x 1,000,000)` := try][, c("try", "growth") := NULL]
 
-
-
-saveRDS(gva, paste(srcDir, "finalgvaseries.rds", sep = ""))
 
 
 #------------------------------------------------------------------------------------#

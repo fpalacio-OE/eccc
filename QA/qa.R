@@ -84,6 +84,11 @@ tables <- invisible(lapply(tables,
 
 old <- tables[['old']]
 new <- tables[['new']]
+
+#  Duplicates
+
+
+
 ## Comparison -----------------
 
 # var list
@@ -97,15 +102,17 @@ gainedvars.unique <- unique(gainedvars$variable)
 
 print(paste(length(gainedvars.unique), " variables gained (some may occur in more than one province)"))
 
+
+
 #lost variables
 lostvars        <- oldvars[!newvars, on = list(geography,variable)]
 lostvars.unique <- unique(lostvars$variable)
 
 print(paste(length(lostvars.unique), "unique variables lost (some may occur in more than one province)"))
 
-#prepare for comparison
 
-var <- "YAA,ALBERTA"
+# Series comparison
+
 
 compare_datasets <- function(variable,old,new) {
   var <- tstrsplit(variable,",")[[1]]
@@ -157,6 +164,7 @@ compare_datasets <- function(variable,old,new) {
 
 }
 
+var <- "YAA,ALBERTA"
 
 compare_datasets(var, old,new)
 
@@ -165,19 +173,109 @@ compare_datasets(var, old,new)
 # clean the pre-interpolation file and attach mnemonics
 
 raw <- melt(raw, id.vars = c("geography","code","year"))
-raw <- raw[ !(code == "NAT" & !(variable %in% macrovars))]
-raw <- raw[ !(code != "NAT" & (variable %in% macrovars))]
 
 raw <- AttachMnems(raw, paste0(srcDir.new,rsrc))
+raw <- raw[!is.na(value)]
 setkey(raw,"geography","mnemonic")
 
-raw <- melt(raw, id.vars = c("geography","code","year"))
+raw[, year := as.numeric(year)]
 
-x[,year := as.numeric(gsub("V","",year)) + 1970]
 
-variable <- "YAGR,ALBERTA"
+variable <- "YMMET,ALBERTA"
+
+#function that just determines if a series was interpolated
 view_interpolation <- function(variable,raw,new) {
+  #parse parameters
+  var <- tstrsplit(variable,",")[[1]]
+  geo <- tstrsplit(variable,",")[[2]]
   
+  #reshape source data
+  setnames(     raw, c("geography" ,"value","variable","mnemonic","sectorcode"), c("geoname", "origval","varname","variable","geography"))
+  comparison <- raw[new, on = list(variable, geography, year)]
+  #setnames(     comparison, c('i.variable','i.value'),c('varname','origval'))
+  idvars     <- names(comparison)[!grepl("val",names(comparison))]
+  
+  comparison <- melt(comparison, id.vars = idvars, variable.name = "vintage")
+  
+  setkey(       comparison, variable, geography)
+  
+  #create plot
+  tab        <- comparison[.(var,geo), nomatch = 0]
+  print(dcast(tab,...~vintage))
+  plt <- ggplot(tab,aes(x = year, y = value, color = vintage )) +
+    geom_line(na.rm = T, position = position_jitter(w = .2, h = 0)) +
+    geom_point() +
+    theme(legend.position = c(.9,.2), plot.title = element_text( hjust = .5, vjust = 0.5, face = 'bold')) +
+    ggtitle(variable) +
+    geom_text(data = tab[is.na(value)], aes(y = min(tab$value,na.rm = T), label = "x"),
+              position = position_dodge(w = .2), show.legend = F)
+  plt
+  
+  #calculate growthrates
+  rates <- unique( comparison[,.(geography, variable, vintage, year,value)])
+  dcast(rates,...~vintage)
+  
+  rates <- dcast(comparison[,.(geography, variable, vintage, year,value)], ...~vintage)
+  rates[,  growth := c(NA, value / shift(value) - 1), by = list(variable, geography, code, varname, sectorcode)]
+  
+  rates      <- rates[,.(geography, variable, year, varname,growth, value)]
+  rates[!value %in% c(.001, 0), test := ifelse(shift(value) %in% 0, NA, cut(growth, quantile(growth, probs = 0:10/10, na.rm = T), include.lowest = TRUE, labels = FALSE)), by = year]
+  
+  rates[test == 10]
+  summary(comparison$value)
+  
+  clrs <- round(seq(255, 40, length.out = 2 + 1), 0) %>%
+  {paste0("rgb(255,", ., ",", ., ")")}
+  
+  rates2 <- datatable(rates[, .(year, "new rate" = new, "old rate" = old, diff)], options = list(pageLength = 40)) %>%
+    formatStyle('year','diff', backgroundColor = styleInterval(c(.05,.1),clrs)) %>%
+    formatRound(c(2:5),2)
+  
+  
+  ui <- dashboardPage(
+    dashboardHeader(title = "Series Comparison"),
+    dashboardSidebar(
+      width = 0
+    ),
+    dashboardBody(
+      box(title = "Data Path", status = "primary",height = "500" ,solidHeader = T,
+          plotOutput("trace_plot")),
+      box( title = "Growth Rate Comparison", status = "primary", height = 
+             "595",width = "6",solidHeader = T, 
+           column(width = 12,
+                  dataTableOutput("trace_table"),style = "height:500px; overflow-y: scroll;overflow-x: scroll;"
+           )
+      )))
+  
+  server <- function(input, output) { 
+    #Plot for Trace Explorer
+    output$trace_plot  <- renderPlot(plt)
+    output$trace_table <- renderDataTable({rates2})
+  }
+  
+  shinyApp(ui, server)
   
 }
 
+
+#function that just determines if a series was interpolated
+produce_summary <- function(raw,new) {
+  new[raw, on = c(variable = "mnemonic", "geography", "year")]
+  
+  # summarize differences from the original series (omitting replacements of NA)
+  
+  # summarize weird growth rates
+  
+}
+
+
+test_dups <- function(myDT, view = FALSE) {
+  #myDT  <- copy(rates)
+  #setkey(myDT, geography, year, vintage, variable)
+  if (is.null(key(myDT))) {setkey(myDT, geography, year, code, variable)}
+  dups = duplicated(myDT, by = key(myDT));
+  myDT[, fD := dups | c(tail(dups, -1), FALSE)]
+  if (view == TRUE) {View(myDT[fD == TRUE])}
+  
+  unique(myDT[fD == TRUE,variable])
+}
