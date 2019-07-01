@@ -23,9 +23,14 @@ library(Biobase)
 # Directories
 srcDir.old  <- "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/eccc/2007 base/"
 srcDir.new  <- "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/eccc/"
-
+dstDir      <- "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/eccc/QA/outputs/"
 rsrc        <- "resources/"
 out         <- "outputs/"
+codedir     <- "Directory-namestonaicscodes-2.xlsx"
+# resource files
+naicsdir    <- paste(srcDir.new, rsrc, eval(codedir), sep = "")
+mnems       <- as.data.table(read_excel(naicsdir, na = "NA", sheet = "FinalMnem", col_names = TRUE))
+
 
 # pre-interpolation data file (must be an RDS file)
 rawdata.filename.old <- "shortdb.rds"
@@ -56,7 +61,7 @@ datafiles.new <- c("envcandb-filled.csv",
                    "trend.csv")
 
 # macro and variable names
-industryvar.mnems <- c('YHAT','TREND','CUMOD','DELTAC','DELTAIP','DELTAME','EMP','GY','Y','AVHR','IFC','IFIP','IFME','KC','KIP','KME',
+industryvar.mnems <- c('YHAT','TREND','DELTAC','DELTAIP','DELTAME','EMP','GY','Y','AVHR','IFC','IFIP','IFME','KC','KIP','KME',
                     'PMX','ER','XN','XX','MN','MX','PGDP','K','P','IF','X','M')
 
 industry.mnems    <- c("",'A','AC','AA','AF','AH','AS','E','EO','EM','EMC','EMM','EMMI','EMMG','EMMC','EMMO',
@@ -230,13 +235,21 @@ compare_datasets(var, old,new)
 # QA ---------------------
 
 # clean the pre-interpolation file and attach mnemonics
+new[,`:=`
+     (prices = ifelse(grepl("!",variable), "nominal", "real"),
+      ind    = gsub(paste0("^",industryvar.mnems,collapse = "|"),"",variable))][, ind := gsub("!","",ind)]
 
+new[ind == "ON" ,ind  := "CON"]
+new[            ,vargroup := gsub("!","",variable)][, vargroup := mapply(function(x,y) gsub(paste0(x,"$"),"", y), ind,vargroup)]
+new[            ,code  := mnems$code[match(ind, mnems$mnem)]]
+new[ind == ""   ,code := "1"]
 
 
 variable <- "YMMET,ALBERTA"
 
 #function that just determines if a series was interpolated
 view_interpolation <- function(variable,raw, new) {
+
   #parse parameters
   var <- tstrsplit(variable,",")[[1]]
   geo <- tstrsplit(variable,",")[[2]]
@@ -266,9 +279,12 @@ view_interpolation <- function(variable,raw, new) {
   print(setorder(dcast(tab,...~vintage),year))
 }
 
-produce_summary <- function(geo, plotname, orig = copy(raw), curr = copy(new)) {
-  print(head(orig))
-  print(head(curr))
+produce_summary <- function(geo, sectorgroup = "", orig = copy(raw), curr = copy(new), skip_detail = FALSE) {
+  path = paste0(dstDir, "summary","-",sectorgroup,"-",geo, ".pdf")
+  
+  open.check <- suppressWarnings("try-error" %in% class(try(file(path, open = "w"), silent = TRUE)))
+  if (open.check == TRUE) {stop(paste0("Close ",path," first"))}
+  
   #reshape source data
   setnames(     orig, "value","origval")
   comparison <- orig[curr, on = list(variable, geography, year)]
@@ -280,53 +296,84 @@ produce_summary <- function(geo, plotname, orig = copy(raw), curr = copy(new)) {
   setkey(       comparison, variable, geography)
   
   #calculate growthrates
-  rates <- unique( comparison[,.(geography, variable,varname, vintage, year,value)])
+  rates <- unique( comparison[,.(geography, variable,varname, vintage, year,value,ind,vargroup,prices,code)])
   rates <- dcast(rates,...~vintage)
   
-  rates[, `:=`(growth    = ifelse(shift(value) == .001, 0, value / shift(value) - 1),
-               origgrowth = origval / shift(origval) - 1), by = list(variable, geography)]
+  rates[, `:=`(growth     = ifelse(shift(value) %in% c(0,.001), 0, value / shift(value) - 1),
+               origgrowth = origval / shift(origval) - 1)                                   , by = list(variable, geography)]
   
   rates[!value %in% c(.001, 0), quant := ifelse(shift(value) %in% 0, NA,cut(growth,unique(c(-Inf,unique(quantile(growth[!growth %in% c(0,1,-1) ], probs = 0:100/100, na.rm = T)),Inf)), include.lowest = TRUE, labels = FALSE)), by = year]
-  rates[, check := quant > 99 | quant < 2][,filter := ifelse(shift(check,type = "lead") %in% TRUE, TRUE, check)]
+  rates[, check := quant > 99 | quant < 2]#[,filter := ifelse(shift(check,type = "lead") %in% TRUE, TRUE, check)]
 
   # prepare for plotting
   data <- copy(rates)
+  
   data <- data[ grepl(paste0("^",industryvar.mnems,collapse = "|"),variable)]
-  data[,`:=`
-       (prices = ifelse(grepl("!",variable), "nominal", "real"),
-        ind    = gsub(paste0("^",industryvar.mnems,collapse = "|"),"",variable))][, ind := gsub("!","",ind)]
-  data[ ind == "ON", ind := "CON"]
-  data[,vargroup := gsub("!","",variable)][, vargroup := mapply(function(x,y) gsub(paste0(x,"$"),"", y), ind,vargroup)]
+  if (sectorgroup != "") {data <- data[grepl(paste0("^",sectorgroup),code)]}
   
   setkey(data, variable, geography)
+  
   dataT     <- data[ind %in% industry.mnems][check == TRUE][,.(geography,variable, year, prices,ind,check,vargroup)]
   dataT$ind <- factor(as.character(dataT$ind), levels = rev(industry.mnems))
-  # plot extreme values for industry vars
   
+  # plot extreme values for industry vars
   p <- ggplot(dataT[geography == geo], aes(year, ind)) +
     geom_point() +
     facet_wrap(c("vargroup","prices")) +
-    theme(legend.position = c(.9,.2), plot.title = element_text( hjust = .5, vjust = 0.5, face = 'bold')) +
+    theme(legend.position = c(.9,.2), plot.title = element_text( hjust = .5, vjust = 0.5, face = 'bold'),
+          axis.text.y = element_text(size = 4)) +
     ggtitle(paste("Summary Chart",geo, sep = "-"))
   
+  
+  pdf(path, width = 11, height = 8)
   print(p)
-  
-  uservar <- readline(prompt = "Which variable group for detail: ")   
-
-  pdf(paste0(plotname, ".pdf"))
-  
-  k <- ggplot(dataT[geography == geo & vargroup == uservar], aes(year, ind)) +
-    geom_point(color = "red") +
-    facet_wrap(c("vargroup","prices")) +
-    theme(axis.text.y = element_text(size = 4)) 
   dev.off()
   
-  print(k)
   
+  system(paste0('cmd /c "', path, '"'))
+  
+  #print(p)
+
+  if (skip_detail == TRUE) {break}
+  
+  # add detail plot
+  for (i in 1:100) {
+    
+    uservar <- toupper(readline(prompt = "Which variable group for detail (no quotes): "))
+    if (!uservar %in% unique(dataT$vargroup)) {next}
+    k <- ggplot(dataT[geography == geo & vargroup == uservar], aes(year, ind)) +
+      geom_point(color = "red") +
+      facet_wrap(c("vargroup","prices")) +
+      theme(axis.text.y = element_text(size = 8)) 
+    
+    dev.new()
+    print(k)
+    
+    # give additional 
+    for (i in 1:100) {
+      uservar2 <- toupper(readline(prompt = "If you want additional sector detail write sector mnemonic. To continue press enter:"))
+      sector   <- paste0(uservar,uservar2)
+      if (uservar2 == "") {
+        break
+      }else{
+        print(setorder(data[.(sector, geo), .(geography,variable, year, value, growth,prices,"extreme_val" = check), nomatch = 0],prices,year))
+      }
+    }
+    
+    uservar3 <- readline(prompt = "return to summary? (y/n): ")   
+     
+    if (uservar3 == "y") {
+       #dev.off()
+     }else{
+         break
+       }
+  }
 
 }
 
-produce_summary("ALBERTA","detail")
+#"ALBERTA"  "B_COLUMB" "CANADA"   "MANITOBA" "NBRUNSWK" "NFOUNLND" "NORTHWT"  "NOVA_SCO" "NUNAVUT"  "ONTARIO"  "PRINCE_E" "QUEBEC"  
+#"SASKCHWN" "YUKON" 
+produce_summary("B_COLUMB","3")
 
 
 

@@ -5,6 +5,7 @@ AttachMnems <- function(fulldbmelted,srcDir){
   smerge  <- "SeriesMerge"
   naicsdir <- paste(srcDir, eval(codedir), sep = "")
   mnems   <- as.data.table(read_excel(naicsdir, na = "NA", sheet = "FinalMnem", col_names = TRUE))
+  sectors <- as.data.table(read_excel(naicsdir, na = "NA", sheet = "sectorcode", col_names = TRUE))
   
 
   merge    <- as.data.table(read_excel(naicsdir, na = "NA", sheet = eval(smerge), col_names = TRUE))
@@ -29,7 +30,7 @@ AttachMnems <- function(fulldbmelted,srcDir){
                  sectorcode = sectors$code[match(fulldbmelted$geography, sectors$geography, nomatch = NA)],
                  sectormnems = mnems$mnem[match(fulldbmelted$code, mnems$code, nomatch = NA)],
                  leveltag = mnems$Tag[match(fulldbmelted$code, mnems$code, nomatch = NA)]
-               )            ]
+               )]
   # get rid of any extra sectors
   fulldbmelted <- fulldbmelted[!is.na(sectormnems) | code == 1 | code == "NAT"]
   # get rid of top downs and aggregates in the delta and avhr series

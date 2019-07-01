@@ -291,9 +291,9 @@ saveRDS(fixedseries, paste(srcDir, "fixedseries.rds", sep = ""))
 # 
 # 
 # #------------------------------------------------------------------------------------#
-# #     2b: quick check on the chained, focusing only on 2007. Anything that gets  #####
-# #         changed will get regrown (back and forward using the original growth   #####
-# #         rates                                                                  #####
+#     2b: quick check on the chained, focusing only on 2007. Anything that gets  #####
+#         changed will get regrown (back and forward using the original growth   #####
+#         rates                                                                  #####
 # #------------------------------------------------------------------------------------#
 # gvatieup2chained <- fixedseries[variable == "gva - chained prices (x 1,000,000)"]
 # 
@@ -933,7 +933,7 @@ tagsforfix[, tag := ifelse(tag == 1 | i.tag == 1, 1, 0)][, c("i.tag") := NULL]
 finalgvaseries <- verthortieup(gvaforfinalfix, tagsforfix, gvatag = 1)
 
 #------------------------------------------------------------------------------------#
-#     Rescale new series                                                         #####
+#         Rescale new series                                                     #####
 #------------------------------------------------------------------------------------#
 forgrowback <- beforenationalscaling[gvaseries]
 # forgrowback<- melt(forgrowback, id.vars =c("geography", "code", "year","umbrella"))
@@ -1068,7 +1068,7 @@ saveRDS(gva, paste(srcDir, "finalgvaseries.rds", sep = ""))
 print("GVA series ready.")
 
 #------------------------------------------------------------------------------------#
-#  Step 8: Use GVA series to fill in other variables                             #####
+# Step 8: Use GVA series to fill in other variables                              #####
 #------------------------------------------------------------------------------------#
 omitmacro <- c("geography", "code", "year", finalvariables)
 
@@ -1166,7 +1166,7 @@ GVAallocation[, c("share", "umbrella", "umbrellaval", "try") := NULL]
 saveRDS(GVAallocation, paste(srcDir, "step3.rds", sep = ""))
 
 #------------------------------------------------------------------------------------#
-# Step 9: Use umbrella growth rates to fill gaps                                ######
+# Step 9: Use umbrella growth rates to fill gaps                                 ######
 #------------------------------------------------------------------------------------#
 step5db <- GVAallocation
 
