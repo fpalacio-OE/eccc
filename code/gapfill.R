@@ -18,12 +18,11 @@ library("pbapply")
 # sourcebase = "envcandb-new.rds"
 
 
-urlfile <- "DataWarehouse-4.xlsm"
-codedir <- "Directory-namestonaicscodes-2.xlsx" # <-------------- # This file contains (on the left are sheet names):
-mainlist <- "Main" # 1. The official list of delivered sectors
-xtendeddir <- "Expanded" # 2. The list of all the pulled sectors, including those that are used to calculate one of the official sectors
-mapdir <- "Mapping" # 3. The mapping of the 2 to 1
-smerge <- "SeriesMerge" # 4. The mapping of the various series that make each variable
+codedir     <- "Directory-namestonaicscodes-2.xlsx" # This file contains:
+mainlist    <- "Main"        # 1. The official list of delivered sectors
+xtendeddir  <- "Expanded"    # 2. The list of all the pulled sectors, including those that are used to calculate one of the official sectors
+smerge      <- "SeriesMerge" # 3. The mapping of the various series that make each variable (also used to attach variable mnemonics)
+shiftshares <- "Shiftshares" # 4. The hierarchichal structure of target industries 
 
 
 # mapping file (useful at times)
@@ -32,17 +31,16 @@ naics    <- as.data.table(read_excel(naicsdir, na = "NA", sheet = eval(mainlist)
 nind     <- nrow(naics) # of industries
 
 # upload mapping doc & extended sectors list
-mapping <- as.data.table(read_excel(naicsdir, na = "NA", sheet = eval(mapdir), col_names = TRUE, col_types = c("guess", "guess", "guess", "guess", "text", "guess")))
 fullnaicslist <- as.data.table(read_excel(naicsdir, na = "NA", sheet = eval(xtendeddir), col_names = TRUE))
 
 # upload series merge map
-merge <- as.data.table(read_excel(naicsdir, na = "NA", sheet = eval(smerge), col_names = TRUE))
-mnems <- as.data.table(read_excel(naicsdir, na = "NA", sheet = "FinalMnem", col_names = TRUE))
+merge   <- as.data.table(read_excel(naicsdir, na = "NA", sheet = eval(smerge), col_names = TRUE))
+mnems   <- as.data.table(read_excel(naicsdir, na = "NA", sheet = "FinalMnem", col_names = TRUE))
 sectors <- as.data.table(read_excel(naicsdir, na = "NA", sheet = "sectorcode", col_names = TRUE))
 
 
 # this doc maps the shift shares
-shiftshares   <- as.data.table(read_excel(naicsdir, na = "NA", sheet = "Shiftshares", col_names = TRUE))
+shiftshares   <- as.data.table(read_excel(naicsdir, na = "NA", sheet = shiftshares, col_names = TRUE))
 umbrellasects <- unique(shiftshares$umbrella)[!is.na(unique(shiftshares$umbrella)) & unique(shiftshares$umbrella) != "NAT"]
 
 
@@ -54,20 +52,10 @@ source(paste0(codeDir,"functions/verticaltieupfunction.r"))
 source(paste0(codeDir,"functions/simpletieupfunction.r"))
 
 options(scipen = 999)
+
 # Load up bases
-# RDSpath <-paste(dstDir, "envcandb-new.rds",sep="")
 envcandb <- readRDS(paste(srcDir, "envcandb-new.rds", sep = ""))
-
-# fixing an API issue temporarily
-# envcandb <- envcandb[!(code == "327A" & var %like% "3810031")]
-# mpetao <- as.data.table(read.csv(paste0(srcDir, "mpetao-temp.csv")))
-# mpetao <- melt(mpetao, id.vars = c("geography", "var", "code"), variable.name = "year")
-# mpetao[, `:=`(geography = as.character(geography), code = as.character(code), year = gsub("X", "", year))]
-
-# envcandb <- rbind(envcandb, mpetao)
-# envcandb<-envcan[[1]]
 envcandb <- dcast(envcandb, geography + code + year ~ var)
-
 
 # working db with shorter time
 envcandbshort <- envcandb[year >= 1980]
@@ -172,7 +160,7 @@ saveRDS(envcandbshort, eval(listpath))
 #------------------------------------------------------------------------------------#
 
 #------------------------------------------------------------------------------------# 
-# Step 1: Impose real growth rates (where available)                             #####
+# Step 1 : Impose real growth rates (where available)                            #####
 #------------------------------------------------------------------------------------#
 print("Imposing true growth rates, where possible")
 # this list contains everything besides macro variables
@@ -216,15 +204,6 @@ rm(list = c("dbformerge", "subgrouplist", "subgrouplist2", "dbforsplit"))
 
 ### calculate growth rates for existing series###
 
-# columns to work with
-# foroperation<-names(dbmerge)[!(names(dbmerge) %in% c("geography", "code", "year", "variable")) ]
-# foroperation<-foroperation[!(foroperation %like% "overlap")]
-# #switch to numerics
-# suppressWarnings(dbmerge[,(foroperation):=lapply(.SD, function(y) as.numeric(gsub("[^0-9.]", "", y))),.SD=(foroperation)])
-# newnames<-paste(foroperation,"growth",sep="-")
-# #calculate
-# dbmerge[, (newnames):= lapply(foroperation, function(x) {c(NA,exp(diff(log(get(x)))))}), by=list(geography, code)]
-# dbmerge<-split(dbmerge, by="variable")
 # this takes each subtable and adds the growth columns
 finalprep <- function(x) {
   foroperation <- names(x)[!grepl("geography|code|year|variable|overlap", names(x))]
@@ -247,146 +226,11 @@ fixedseries <- rbindlist(lapply(fixedseriesformerge, rbindlist))
 saveRDS(fixedseries, paste(srcDir, "fixedseries.rds", sep = ""))
 
 
-#------------------------------------------------------------------------------------#
-# Step 2: Check addition among umbrella groups across provinces, focusing on     #####
-#         gva, nominal 2007-2014                                                 #####
-#------------------------------------------------------------------------------------#
-# Fill in all sectors/years
-# ngeo <- length(unique(fixedseries$geography))
-# year <- rep(kronecker(1980:2017, rep(1, nind)), ngeo)
-# ny <- length(1980:2017)
-# code <- rep(naics$code, ny)
-# geography <- rep(unique(fixedseries$geography), each = ny * nind)
-# 
-# leftcol <- as.data.table(cbind(geography, code, year))
-# fixedseries <- dcast(fixedseries, geography + code + year ~ variable)
-# fixedseries <- merge(leftcol, fixedseries, by = c("code", "year", "geography"), all.x = T)
-# fixedseries <- melt(fixedseries, id.vars = c("code", "year", "geography"))
-#------------------------------------------------------------------------------------#
-#     2a: Start with nominals                                                    #####
-#------------------------------------------------------------------------------------#
-# # gvatieup2<- melt(highlevelgva, id.vars = c("variable", "code", "year"))
-# gvatieup2 <- fixedseries
-# # names(gvatieup2)[names(gvatieup2)=="variable.1"]<-"geography"
-# gvatieup2 <- gvatieup2[variable == "gva - current prices (x 1,000,000)"]
-# 
-# gvatieup2[, umbrella := shiftshares$umbrella[match(gvatieup2$code, shiftshares$code, nomatch = NA)]]
-# 
-# 
-# # mark the cells that are in the 379-0030 (1 means it's  in 379-0030 and therefore fixed)
-# `gva - current prices (x 1,000,000)-subgroup`[geography != "Canada", tag := ifelse(is.na(`gross domestic product (gdp) at basic prices-3790030-current prices`), 0, 1)]
-# `gva - current prices (x 1,000,000)-subgroup`[geography == "Canada", tag := ifelse(is.na(`gross domestic product (gdp) at basic prices-3790029-current prices`), 0, 1)]
-# 
-# taglistcurrent <- `gva - current prices (x 1,000,000)-subgroup`[, c("geography", "code", "year", "tag"), with = F]
-# setkey(taglistcurrent, code, geography, year)
-# setkey(gvatieup2, code, geography, year)
-# 
-# gvatieup2 <- taglistcurrent[gvatieup2]
-# 
-# # get list of sectors
-# umbrellasects <- unique(shiftshares$umbrella)[!is.na(unique(shiftshares$umbrella)) & unique(shiftshares$umbrella) != "NAT"]
-# # begin loop on vertical fixes
-# 
-# tieupfunction(gvatieup2)
-# 
-# gvatieup2[, c("umbrella", "tag", "sectorsum") := NULL]
-# 
-# 
-# #------------------------------------------------------------------------------------#
-#     2b: quick check on the chained, focusing only on 2007. Anything that gets  #####
-#         changed will get regrown (back and forward using the original growth   #####
-#         rates                                                                  #####
-# #------------------------------------------------------------------------------------#
-# gvatieup2chained <- fixedseries[variable == "gva - chained prices (x 1,000,000)"]
-# 
-# gvatieup2chained[, umbrella := shiftshares$umbrella[match(gvatieup2chained$code, shiftshares$code, nomatch = NA)]]
-# 
-# # mark the cells that are in the 379-0030 (1 means it's  in 379-0030 and therefore fixed)
-# `gva - chained prices (x 1,000,000)-subgroup`[geography != "Canada", tag := ifelse(is.na(`gross domestic product (gdp) at basic prices-3790030-chained (2012) dollars`), 0, 1)]
-# `gva - chained prices (x 1,000,000)-subgroup`[geography == "Canada", tag := ifelse(is.na(`gross domestic product (gdp) at basic prices-3790031-chained (2012) dollars`), 0, 1)]
-# 
-# 
-# taglistchained <- `gva - chained prices (x 1,000,000)-subgroup`[, c("geography", "code", "year", "tag"), with = F]
-# setkey(taglistchained, code, geography, year)
-# setkey(gvatieup2chained, code, geography, year)
-# 
-# gvatieup2chainedcomplete <- taglistchained[gvatieup2chained]
-# 
-# gvatieup2chained <- gvatieup2chainedcomplete[year == 2007]
-# # begin loop on vertical fixes
-# 
-# for (i in umbrellasects) {
-#   print(i)
-#   # choose relevant sectors
-#   sect <- shiftshares[umbrella %in% i, code]
-#   # calculate sums
-#   suppressWarnings(gvatieup2chained[ code %in% sect, sectorsum := sum(value), by = list(geography, year)])
-# 
-#   # now we move the sums to only the umbrella value using a merge
-#   namesformerge <- names(gvatieup2chained)[!(names(gvatieup2chained) %in% c("value", "umbrella", "try", "tag"))]
-#   y <- gvatieup2chained[code %in% sect[1], ..namesformerge][, code := as.character(i)]
-#   names(y)[names(y) == "sectorsum"] <- "sums"
-#   setkey(y, code, variable, geography, year)
-#   setkey(gvatieup2chained, code, variable, geography, year)
-#   gvatieup2chained <- y[gvatieup2chained]
-# 
-# 
-#   # calculate error
-#   gvatieup2chained[, vertdiff := (value - sums)][, sectorsum := NULL]
-#   # create and paste adjustment
-#   gvatieup2chained[code %in% sect, numfree := length(sect) - sum(tag), by = list(geography, year)]
-#   gvatieup2chained[(code %in% sect | code %in% i) & numfree != 0, adjustment := vertdiff[code == i] / numfree, by = list(geography)]
-#   gvatieup2chained[(code %in% sect | code %in% i) & numfree == 0, adjustment := as.numeric(NA), by = list(geography)]
-#   gvatieup2chained[tag == 1 | code %in% i, adjustment := NA]
-# 
-#   # apply scale factor
-#   gvatieup2chained[, value := ifelse(is.na(adjustment), value, value + adjustment)]
-#   # clean
-#   gvatieup2chained[, c("sums", "vertdiff", "numfree", "adjustment") := NULL]
-# }
-# 
-# gvatieup2chained[, c("umbrella", "tag", "variable") := NULL]
-# names(gvatieup2chained)[names(gvatieup2chained) == "value"] <- "adjustedvals"
-# # now grow back adjusted series accordingly
-# setkey(gvatieup2chainedcomplete, code, geography, year)
-# setkey(gvatieup2chained, code, geography, year)
-# # calculate original growth rates
-# forgrowback <- gvatieup2chained[gvatieup2chainedcomplete]
-# forgrowback[, equality := ifelse(adjustedvals == value, 1, 0)]
-# forgrowback[, origgrowth := c(NA, exp(diff(log(value)))), by = list(geography, code)]
-# 
-# # grow
-# forgrowback[, try := adjustedvals]
-# for (y in 2008:max(forgrowback$year)) {
-#   forgrowback[year == y, `:=`
-#   (try = ifelse(is.nan(origgrowth) | is.infinite(origgrowth) | is.na(origgrowth), value,
-#       ifelse(is.na(forgrowback[year == as.character(as.numeric(y) - 1), try]), value, forgrowback[year == as.character(as.numeric(y) - 1), try] * origgrowth)
-#   ))]
-# }
-# 
-# 
-# # backwards from the first year in the primary series
-# for (y in 2006:min(forgrowback$year)) {
-#   forgrowback[year == y, `:=`
-#   (try = ifelse(is.nan(forgrowback[year == as.character(as.numeric(y) + 1), origgrowth]) | is.infinite(forgrowback[year == as.character(as.numeric(y) + 1), origgrowth]) | is.na(forgrowback[year == as.character(as.numeric(y) + 1), origgrowth]), value,
-#       ifelse(is.na(forgrowback[year == as.character(as.numeric(y) + 1), try]), value, forgrowback[year == as.character(as.numeric(y) + 1), try] / forgrowback[year == as.character(as.numeric(y) + 1), origgrowth])
-#   ))]
-# }
-# # prepare for merge with current
-# tokeep <- c("geography", "code", "year", "try", "variable")
-# gvatieup2chained <- forgrowback[, ..tokeep]
-# names(gvatieup2chained)[names(gvatieup2chained) == "try"] <- "value"
-# 
-# # remerge and recast
-# gapfilldb <- rbind(gvatieup2chained, gvatieup2)
-# gapfilldb <- dcast(gapfilldb, code + year + geography ~ variable)
-
-#not sure what the previous two blocks were for:
+# pull out gva series
 gapfilldb <- fixedseries[variable %like% "gva"]
-
 saveRDS(gapfilldb, paste(srcDir, "gapfilldb.rds", sep = ""))
 #------------------------------------------------------------------------------------#
-# Step 3: Fills GVA gaps using one level up                                      #####
+# Step 2 : Fills GVA gaps using one level up                                     #####
 #------------------------------------------------------------------------------------#
 print("Working on GVA series")
 # working dt for this chunk
@@ -496,8 +340,8 @@ gvaextended <- forgvaextension[, c(newcols, "level") := NULL]
 saveRDS(gvaextended, paste(srcDir, "step1.rds", sep = ""))
 
 #------------------------------------------------------------------------------------#
-# Step 4: Re-do the scaling on the extended gva series                           #####
-#         Rescale vertically (newly added nominal observations only)             #####
+# Step 3 : Re-do the scaling on the extended gva series                          #####
+#         Rescale vertically (newly added nominal observations only)                 #
 #------------------------------------------------------------------------------------#
 
 
@@ -530,51 +374,11 @@ forgrowbacknominal[, sectorsum := NULL]
 gvatiedvertical <- rbind(forgrowbackcomplete[variable == "gva - chained prices (x 1,000,000)"], forgrowbacknominal)
 
 #------------------------------------------------------------------------------------#
-# Step 5: Now Rescale horizontally                                               #####
-#------------------------------------------------------------------------------------#
-
-
-gvatieup <- gvatiedvertical[, c("tag", "umbrella") := NULL]
-
-# gvatieup<-melt(gvatieup, id.vars = c("code", "year", "geography"))
-gvatieup <- dcast(gvatieup, code + year + variable ~ geography)
-gvatieup <- gvatieup[order(variable, code, year)]
-
-
-# move Canada to the end
-setcolorder(gvatieup, c(setdiff(names(gvatieup), "Canada"), "Canada"))
-
-# calculate row sums
-notcanada <- names(gvatieup)[!(names(gvatieup) %in% c("Canada", "year", "code", "variable"))]
-gvatieup[, provtotal := rowSums(.SD), .SDcols = (notcanada)]
-gvatieup[, scale := (Canada - provtotal) / provtotal]
-
-#
-# gvatieup2[,try:=as.numerica(NA)]
-# for(i in umbrellasects){
-#
-#   print(i)
-#   #choose relevant sectors
-#   sect     <-shiftshares[umbrella %in% i, code]
-#   #calculate sums
-#   suppressWarnings(gvatieup2[ code %in% sect, sectorsum:=sum(value), by=list(geography,variable, year)])
-#
-#   #now we move the sums to only the umbrella value using a merge
-#   namesformerge<-names(gvatieup2)[!(names(gvatieup2) %in% c("value", "umbrella", "try"))]
-#   y<- gvatieup2[code %in% sect[1], ..namesformerge][,code:=as.character(i)]
-#   names(y)[names(y)=="sectorsum"]<-"sums"
-#   setkey(y,         code, variable, geography,year )
-#   setkey(gvatieup2, code, variable, geography,year)
-#   gvatieup2<-y[gvatieup2][,sectorsums:=NULL]
-#   gvatieup2[,try:=ifelse(is.na(sums), try, sums)]
-# }
-
-#------------------------------------------------------------------------------------#
-# Step 6: Fill remaining GVA gaps using Natl level                               #####
+# Step 4 : Fill remaining GVA gaps using Natl level                              #####
 #------------------------------------------------------------------------------------#
 # working db for step2
 remaininggvagaps <- dcast(gvatiedvertical, geography + code + year ~ variable)
-# prepare the natinoal gva table
+# prepare the national gva table
 nationalgva <- remaininggvagaps[geography == "Canada"][, umbrella := NULL]
 
 # apply proportions from current to real (onlyu where absolutely necessary)
@@ -613,6 +417,7 @@ nationalgva[, `:=`
 
 
 colnames(nationalgva)[4:5] <- c("natlvalreal", "natlvalnom")
+
 # merge into the extended gva table
 setkey(remaininggvagaps, year, geography, code)
 remaininggvagaps[, umbrella := shiftshares$umbrella[match(remaininggvagaps$code, shiftshares$code, nomatch = NA)]]
@@ -690,50 +495,13 @@ gvaseries[, `:=`
       `gva - current prices (x 1,000,000)`
     )
 ), by = list(geography, year)]
-#------------------------------------------------------------------------------------#
-# umbrella growth for gva
-#------------------------------------------------------------------------------------#
+
+
 gvavariables <- c("gva - current prices (x 1,000,000)", "gva - chained prices (x 1,000,000)")
-for (i in 1:5) {
-  for (var in gvavariables) {
-    print(var)
-    # var="investment - chained prices (x 1,000,000)"
-    # calculate
-    suppressWarnings(
-      gvaseries[, `:=`
-      (
-        umbrella = shiftshares$umbrella[match(gvaseries$code, shiftshares$code, nomatch = NA)],
-        try = as.numeric(NA)
-      )              ][, `:=`
-      (umbrellaval = get(var)[match(umbrella, code, nomatch = NA)]),
-      by = list(year, geography)
-      ][,
-        umbrellagrowth := c(NA, exp(diff(log(umbrellaval)))),
-        by = code
-      ]
-    )
-    gvaseries[is.infinite(umbrellagrowth) | is.nan((umbrellagrowth)), umbrellagrowth := 1]
-    for (y in (as.numeric(min(gvaseries$year)) + 1):max(gvaseries$year)) {
-      gvaseries[year == y, `:=`
-      (try = ifelse(is.na(gvaseries[year == y, get(var)]), gvaseries[year == y - 1, try] * (gvaseries[year == y, umbrellagrowth]), gvaseries[year == y, get(var)]))              ]
-    }
 
-    # assign and get rid of extrainfo
-    gvaseries[, eval(var) := try]
-  }
-}
-gvaseries[, c("umbrellagrowth", "try", "umbrella", "umbrellaval") := NULL]
 #------------------------------------------------------------------------------------#
-#     6a: Once again re do the vertical tie up                                   #####
+# Step 5 : Once again do the vertical tie up                                     ####    
 #------------------------------------------------------------------------------------#
-
-# gva before extension
-# beforenationalscaling<-dcast(gvatiedvertical,geography+code+year~variable)
-# names(beforenationalscaling)[names(beforenationalscaling)=="gva - chained prices (x 1,000,000)"]<-"originalchained"
-# names(beforenationalscaling)[names(beforenationalscaling)=="gva - current prices (x 1,000,000)"]<-"originalnom"
-#
-# setkey(beforenationalscaling, geography, code, year)
-# setkey(gvaseries, geography, code, year)
 
 # try with more free cells
 beforenationalscaling <- gapfilldb
@@ -778,9 +546,11 @@ tieupfunction(forgrowbacknominal)
 
 
 gvaseries2 <- rbind(forgrowbackcomplete[variable == "gva - chained prices (x 1,000,000)"], forgrowbacknominal[, c("code", "year", "geography", "variable", "value", "tag", "umbrella"), with = F])
+
+saveRDS(gvaseries2, paste(srcDir, "step5a.rds", sep = ""))
 #------------------------------------------------------------------------------------#
-#         **OPTIONAL** now we have the canada totals, so we can ensure the       #####
-#         subsectors add across provinces. Default setting is to ignore          #####
+#         **OPTIONAL** now we have the canada totals, so we can ensure the
+#         subsectors add across provinces. Default setting is to ignore
 #         problem series outside of the 379-0030 range                           #####
 #------------------------------------------------------------------------------------#
 
@@ -831,8 +601,10 @@ gvachained <- forgrowbackcomplete[, !c("umbrella", "tag"), with = F]
 
 gvahorfixed <- rbind(gvahorfixed, gvachained[geography != "Canada" & variable == "gva - chained prices (x 1,000,000)"])
 gvahorfixed[, variable := as.character(variable)]
+
+saveRDS(gvahorfixed, paste(srcDir, "step5b.rds", sep = ""))
 #------------------------------------------------------------------------------------#
-# Step 7: Impose all real data growth rates to the gva series                        #
+# Step 6 : Impose all real data growth rates to the gva series                   #####
 #------------------------------------------------------------------------------------#
 sectorsformerge <- dcast(gvahorfixed, year + code + geography ~ variable)
 
@@ -889,8 +661,10 @@ fixedgvaseries <- rbindlist(lapply(fixedseriesformerge, rbindlist))
 fixedgvaseries[, umbrella := shiftshares$umbrella[match(fixedgvaseries$code, shiftshares$code, nomatch = NA)]]
 # gapfilldb<-dcast(fixedseries,geography+code+year~variable)
 saveRDS(fixedgvaseries, paste(srcDir, "fixedseriesgva", sep = ""))
+
+saveRDS(fixedgvaseries, paste(srcDir, "step6.rds", sep = ""))
 #------------------------------------------------------------------------------------#
-#     7a: Once again re do the vertical tie up                                   #####
+# Step 7 : Once again re do the vertical tie up                                  #####
 #------------------------------------------------------------------------------------#
 
 
@@ -934,8 +708,10 @@ tagsforfix[, tag := ifelse(tag == 1 | i.tag == 1, 1, 0)][, c("i.tag") := NULL]
 
 finalgvaseries <- verthortieup(gvaforfinalfix, tagsforfix, gvatag = 1)
 
+saveRDS(finalgvaseries, paste0(srcDir, "step7.rds"))
+
 #------------------------------------------------------------------------------------#
-#         Rescale new series                                                     #####
+# Step 8 : Rescale new series                                                    #####
 #------------------------------------------------------------------------------------#
 forgrowback <- beforenationalscaling[gvaseries]
 # forgrowback<- melt(forgrowback, id.vars =c("geography", "code", "year","umbrella"))
@@ -961,14 +737,14 @@ forgrowbackcomplete[, tag := ifelse(variable == "gva - chained prices (x 1,000,0
 # umbrellas
 forgrowbackcomplete[, umbrella := shiftshares$umbrella[match(forgrowbackcomplete$code, shiftshares$code, nomatch = NA)]]
 
-test <- merge(finalgvaseries, forgrowbackcomplete[, !"value"], by = c("code", "year", "geography", "variable"))
+test           <- merge(finalgvaseries, forgrowbackcomplete[, !"value"], by = c("code", "year", "geography", "variable"))
 test[geography != "Canada", mark := ifelse(all(tag == 0), 1, 0), by = list(umbrella, variable, year)]
 
 nationalscales <- test
-replacement <- nationalscales[geography == "Alberta", .(code, year, geography, mark, variable)]
+replacement    <- nationalscales[geography == "Alberta", .(code, year, geography, mark, variable)]
 nationalscales <- nationalscales[geography == "Canada", .(code, year, geography, variable, value, tag, umbrella)]
-nationalscales <- replacement[nationalscales, on = c("code", "year", "variable")]
-nationalscales[mark == 1, sums := sum(value), by = list(variable, umbrella, year)]
+nationalscales <- replacement[   nationalscales, on = c("code", "year", "variable")]
+nationalscales[   mark == 1, sums := sum(value), by = list(variable, umbrella, year)]
 
 # put the sums next to the umbrella value
 
@@ -1024,17 +800,17 @@ y <- lapply(y, backextendgva)
 gva <- rbindlist(y)
 gva[, `gva - chained prices (x 1,000,000)` := try][, c("try", "growth") := NULL]
 
-
+saveRDS(gva, paste0(srcDir, "step8.rds"))
 
 #------------------------------------------------------------------------------------#
-## Step 7b: Correct zeros                                                             #
+# Step 9 : Correct zeros                                                         ####
 #------------------------------------------------------------------------------------#
 # bring in primary series
 primary <- envcandbshort[, c("code", "year", "geography", "gross domestic product (gdp) at basic prices-3790030-current prices", "gross domestic product (gdp) at basic prices-3790029-current prices", "gross domestic product (gdp) at basic prices-3790031-chained (2012) dollars", "gross domestic product (gdp) at basic prices-3790030-chained (2012) dollars"), with = F]
 primary[geography == "Canada", `:=`
 (
   primaryreal = `gross domestic product (gdp) at basic prices-3790031-chained (2012) dollars`,
-  primarynom = `gross domestic product (gdp) at basic prices-3790029-current prices`
+  primarynom  = `gross domestic product (gdp) at basic prices-3790029-current prices`
 )]
 
 primary[geography != "Canada", `:=`
@@ -1070,7 +846,7 @@ saveRDS(gva, paste(srcDir, "finalgvaseries.rds", sep = ""))
 print("GVA series ready.")
 
 #------------------------------------------------------------------------------------#
-# Step 8: Use GVA series to fill in other variables                              #####
+# Step 10: Use GVA series to fill in other variables                             #####
 #------------------------------------------------------------------------------------#
 omitmacro <- c("geography", "code", "year", finalvariables)
 
@@ -1168,7 +944,7 @@ GVAallocation[, c("share", "umbrella", "umbrellaval", "try") := NULL]
 saveRDS(GVAallocation, paste(srcDir, "step3.rds", sep = ""))
 
 #------------------------------------------------------------------------------------#
-# Step 9: Use umbrella growth rates to fill gaps                                 ######
+# Step 11: Use umbrella growth rates to fill gaps                                ######
 #------------------------------------------------------------------------------------#
 step5db <- GVAallocation
 
@@ -1220,7 +996,7 @@ saveRDS(step5db, paste(srcDir, "step5.rds", sep = ""))
 
 
 #------------------------------------------------------------------------------------#
-# Step 10: Test tie ups                                                          #####
+# Step 12: Test tie ups                                                          #####
 #------------------------------------------------------------------------------------#
 print("Apply tie up function.")
 
@@ -1285,7 +1061,7 @@ allseriesforgrowthrates <- rbind(rbindlist(firsttieall), wages, chainedvarsforgr
 saveRDS(allseriesforgrowthrates, paste(srcDir, "step10.rds", sep = ""))
 rm(list = c("allseriesfortieup", "firsttieall"))
 #------------------------------------------------------------------------------------#
-# Step 11: Impose all real data growth rates to all the series                   #####
+# Step 13: Impose all real data growth rates to all the series                   #####
 #------------------------------------------------------------------------------------#
 print("Impose growth rates from actual data.")
 
@@ -1345,7 +1121,7 @@ fixedseriesall <- rbindlist(lapply(fixedseriesformerge, rbindlist))
 saveRDS(fixedseriesall, paste(srcDir, "fixedseriesall.rds", sep = ""))
 
 #------------------------------------------------------------------------------------#
-# Step 12: Test tie ups                                                          #####
+# Step 14: Test tie ups                                                          #####
 #------------------------------------------------------------------------------------#
 print("Last tie up function.")
 # this function combines the horizontal and vertical tie up functions. It takes two arguments
@@ -1404,10 +1180,10 @@ if (!("variable" %in% names(finalgvaseries))) {
 # dbtieups<-rbind(allseriestied,employment,wages,hours,finalgvaseries)
 dbtieups <- rbind(allseriestied, wages, hours, finalgvaseries)
 
-######################################################
-# Step 13:                                        #####
-# Remerge with macro vars and prepare for export  #####
-######################################################
+#------------------------------------------------------------------------------------#
+# Step 15: Remerge with macro vars and prepare for export                        #####
+#------------------------------------------------------------------------------------#
+
 # seriesformerge<-tieups
 print("Bring back macro data.")
 
@@ -1425,20 +1201,16 @@ fulldb[, industry := indnames]
 suppressWarnings(fulldb[, level := NULL])
 
 
-exportpath <- paste(srcDir, "envcandb-filled.rds", sep = "")
+exportpath <- paste(srcDir, "envcandb-full.rds", sep = "")
 saveRDS(fulldb, eval(exportpath))
 
 # recover
-# exportpath <-paste(srcDir, "envcandb-filled.rds",sep="")
+# exportpath <-paste(srcDir, "envcandb-full.rds",sep="")
 # fulldb<-as.data.table(readRDS(eval(exportpath)))
 
-######################################################
-# Step 14:                                        #####
-# Calculate delta, avg hrs and wages             #####
-######################################################
-
-
-
+#------------------------------------------------------------------------------------#
+# Step 16: Calculate delta, avg hrs and wages                                    #####
+#------------------------------------------------------------------------------------#
 
 # delta
 depreciation <- finalvariables[finalvariables %like% "dep"]
@@ -1472,20 +1244,19 @@ fulldb <- fulldb[code %in% naics$code]
 fulldb[fulldb == .001] <- .001000001
 
 
-######################################################
-# Step 14:                                        #####
-# Calculations on Macro vars                     #####
-######################################################
+#------------------------------------------------------------------------------------#
+# Step 17: Calculations on Macro vars                                            #####
+#------------------------------------------------------------------------------------#
 
 fulldb[, `durable goods-3840038-current prices` := `durable goods-3840038-current prices` + `semi-durable goods-3840038-current prices`]
 fulldb[, `durable goods-3840038-chained (2012) dollars` := `durable goods-3840038-chained (2012) dollars` + `semi-durable goods-3840038-chained (2012) dollars`]
 
 
 
-######################################################
-# Step 15:                                        #####
-# Reshape, add Mnemonics export                  #####
-######################################################
+#------------------------------------------------------------------------------------#
+# Step 18: Reshape, add Mnemonics export                                         #####
+#------------------------------------------------------------------------------------#
+
 # industry mnems
 # fulldb[,sectormnems:=mnems$mnem[match(fulldb$code,mnems$code,nomatch=NA)]]
 print("Prepare for export.")

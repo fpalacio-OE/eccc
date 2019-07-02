@@ -10,7 +10,7 @@ options(scipen = 999)
 
 # prepare data
 
-fulldb <- readRDS(paste0(srcDir, "envcandb-filled.rds"))
+fulldb <- readRDS(paste0(srcDir, "envcandb-full.rds"))
 goutput <- fulldb[, c("geography", "code", "year", "gross output (x 1,000,000)"), with = F]
 goutput <- melt(goutput, id.vars = c("geography", "code", "year"))
 
