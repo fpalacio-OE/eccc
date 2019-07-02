@@ -11,12 +11,6 @@ dstDir  <- "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/eccc/o
 
 base    <- 2012
 
-## API ----------
-## Functions for this block are in statcan-pulls.R
-
-# load functions for pulls and for cleaning plus relevant packages and parameters
-source(paste0(codeDir, "statcan-pulls.R"))
-
 # set date range
 startDate <- "1980-1-01T08:30"
 endDate   <- strftime(Sys.time(),"%Y-%m-%dT%H:%M")
@@ -25,6 +19,12 @@ endDate   <- strftime(Sys.time(),"%Y-%m-%dT%H:%M")
 export_names <- list(paste0(srcDir, "envcandb-new.rds"),
                      paste0(srcDir, "metadata-new.rds"),
                      paste0(srcDir, "trade-new.rds"))
+
+## API ----------
+## Functions for this block are in statcan-pulls.R
+
+# load functions for pulls and for cleaning plus relevant packages and parameters
+source(paste0(codeDir, "statcan-pulls.R"))
 
 # pull data from API and save the raw data as an RDS
 raw  <- pbmapply(download_data, vectors[1:100], startDate, endDate)

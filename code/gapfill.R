@@ -28,8 +28,8 @@ smerge <- "SeriesMerge" # 4. The mapping of the various series that make each va
 
 # mapping file (useful at times)
 naicsdir <- paste(srcDir, eval(codedir), sep = "")
-naics <- as.data.table(read_excel(naicsdir, na = "NA", sheet = eval(mainlist), col_names = TRUE))
-nind <- nrow(naics) # of industries
+naics    <- as.data.table(read_excel(naicsdir, na = "NA", sheet = eval(mainlist), col_names = TRUE))
+nind     <- nrow(naics) # of industries
 
 # upload mapping doc & extended sectors list
 mapping <- as.data.table(read_excel(naicsdir, na = "NA", sheet = eval(mapdir), col_names = TRUE, col_types = c("guess", "guess", "guess", "guess", "text", "guess")))
@@ -42,7 +42,9 @@ sectors <- as.data.table(read_excel(naicsdir, na = "NA", sheet = "sectorcode", c
 
 
 # this doc maps the shift shares
-shiftshares <- as.data.table(read_excel(naicsdir, na = "NA", sheet = "Shiftshares", col_names = TRUE))
+shiftshares   <- as.data.table(read_excel(naicsdir, na = "NA", sheet = "Shiftshares", col_names = TRUE))
+umbrellasects <- unique(shiftshares$umbrella)[!is.na(unique(shiftshares$umbrella)) & unique(shiftshares$umbrella) != "NAT"]
+
 
 sectorals <- readRDS(paste(srcDir, "sectorals.rds", sep = ""))
 
@@ -159,7 +161,7 @@ for (i in 1:length(finalvariables)) {
 # View(envcandbshort)
 
 setkey(envcandbshort, geography)
-listpath <- paste(srcDir, "shortdb.rds",sep ="")
+listpath <- paste(srcDir, "shortdb.rds",sep = "")
 saveRDS(envcandbshort, eval(listpath))
 
 
@@ -1465,6 +1467,9 @@ fulldb[, avghrs := `hours worked` * 1000 / employment][, `hours worked` := NULL]
 fulldb[employment == 0, avghrs := 0]
 
 fulldb <- fulldb[code %in% naics$code]
+
+#small fix to .001 vals (if I don't do this, the program will think I tagged them as missing values)
+fulldb[fulldb == .001] <- .001000001
 
 
 ######################################################
