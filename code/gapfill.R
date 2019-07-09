@@ -545,7 +545,7 @@ forgrowbacknominal <- forgrowbackcomplete[variable == "gva - current prices (x 1
 tieupfunction(forgrowbacknominal)
 
 
-gvaseries2 <- rbind(forgrowbackcomplete[variable == "gva - chained prices (x 1,000,000)"], forgrowbacknominal[, c("code", "year", "geography", "variable", "value", "tag", "umbrella"), with = F])
+gvaseries2 <- rbind(forgrowbackcomplete[variable == "gva - chained prices (x 1,000,000)"], forgrowbacknominal[, c("code", "year", "geography", "variable", "value", "tag", "umbrella"), with = FALSE])
 
 saveRDS(gvaseries2, paste(srcDir, "step5a.rds", sep = ""))
 #------------------------------------------------------------------------------------#
@@ -571,11 +571,11 @@ gvaseries2[, provtotal := rowSums(.SD), .SDcols = (notcanada)]
 gvaseries2[, scale := (Canada - provtotal) / provtotal]
 
 # split apart and merge for fixes
-scales <- gvaseries2[, c("code", "year", "scale", "variable"), with = F]
-nationalvals <- melt(gvaseries2[, c("code", "year", "variable", "Canada"), with = F], id.vars = c("code", "year", "variable"))
+scales <- gvaseries2[, c("code", "year", "scale", "variable"), with = FALSE]
+nationalvals <- melt(gvaseries2[, c("code", "year", "variable", "Canada"), with = FALSE], id.vars = c("code", "year", "variable"))
 names(nationalvals)[names(nationalvals) == "variable.1"] <- "geography"
 
-gvaseriesremelt <- melt(gvaseries2[, c("code", "year", "variable", eval(notcanada)), with = F], id.vars = c("code", "year", "variable"))
+gvaseriesremelt <- melt(gvaseries2[, c("code", "year", "variable", eval(notcanada)), with = FALSE], id.vars = c("code", "year", "variable"))
 names(gvaseriesremelt)[names(gvaseriesremelt) == "variable.1"] <- "geography"
 
 # db ready:
@@ -587,7 +587,7 @@ gvaseriesforhorfix[abs(scale) > .05, tag := 1]
 gvaseriesforhorfix[tag == 1, value := value + scale * value]
 
 # bring back old fixes and umbrella
-tagsformerge <- forgrowbacknominal[geography != "Canada", c("code", "year", "geography", "variable", "tag"), with = F]
+tagsformerge <- forgrowbacknominal[geography != "Canada", c("code", "year", "geography", "variable", "tag"), with = FALSE]
 gvaseriesforhorfix <- tagsformerge[gvaseriesforhorfix, on = c("geography", "variable", "code", "year")]
 gvaseriesforhorfix[, tag := ifelse(is.na(i.tag), tag, i.tag)][, i.tag := NULL][, scale := NULL]
 gvaseriesforhorfix[, umbrella := shiftshares$umbrella[match(gvaseriesforhorfix$code, shiftshares$code, nomatch = NA)]]
@@ -596,8 +596,8 @@ gvaseriesforhorfix[, umbrella := shiftshares$umbrella[match(gvaseriesforhorfix$c
 tieupfunction(gvaseriesforhorfix)
 
 # bring back national values and chained values
-gvahorfixed <- rbind(nationalvals, gvaseriesforhorfix[, c("code", "year", "geography", "variable", "value"), with = F])
-gvachained <- forgrowbackcomplete[, !c("umbrella", "tag"), with = F]
+gvahorfixed <- rbind(nationalvals, gvaseriesforhorfix[, c("code", "year", "geography", "variable", "value"), with = FALSE])
+gvachained <- forgrowbackcomplete[, !c("umbrella", "tag"), with = FALSE]
 
 gvahorfixed <- rbind(gvahorfixed, gvachained[geography != "Canada" & variable == "gva - chained prices (x 1,000,000)"])
 gvahorfixed[, variable := as.character(variable)]
@@ -676,7 +676,7 @@ saveRDS(fixedgvaseries, paste(srcDir, "step6.rds", sep = ""))
 #     colnames(y)= "geography", "variable" "code" "year" "tag"
 
 # set x
-gvaforfinalfix <- fixedgvaseries[, !"umbrella", with = F]
+gvaforfinalfix <- fixedgvaseries[, !"umbrella", with = FALSE]
 # set y
 # these are the fixes before imposing true growth rates
 # tagsforfix<-gvaseriesforhorfix[geography!="Canada", c("geography", "variable", "code", "year", "tag"), with=F]
@@ -688,10 +688,10 @@ gvaforfinalfix <- fixedgvaseries[, !"umbrella", with = F]
 `gva - chained prices (x 1,000,000)-subgroup`[geography == "Canada", tag := ifelse(is.na(`gross domestic product (gdp) at basic prices-3790031-chained (2012) dollars`), 0, 1)]
 
 
-taglistchained <- `gva - chained prices (x 1,000,000)-subgroup`[, c("geography", "code", "year", "tag"), with = F]
+taglistchained <- `gva - chained prices (x 1,000,000)-subgroup`[, c("geography", "code", "year", "tag"), with = FALSE]
 taglistchained[, variable := "gva - chained prices (x 1,000,000)"]
 
-tagsforfix <- `gva - current prices (x 1,000,000)-subgroup`[, c("geography", "code", "year", "tag"), with = F]
+tagsforfix <- `gva - current prices (x 1,000,000)-subgroup`[, c("geography", "code", "year", "tag"), with = FALSE]
 tagsforfix[, variable := "gva - current prices (x 1,000,000)"]
 
 tagsforfix <- rbind(tagsforfix, taglistchained)
@@ -754,11 +754,11 @@ x <- merge(nationalscales, chart, by.y = c("umbrella", "year", "variable"), by.x
 
 # calculate scale
 x[, scalefactor := 1 - (sectorsum - value) / sectorsum]
-chart <- x[!is.na(sectorsum), c("code", "year", "scalefactor", "variable"), with = F]
+chart <- x[!is.na(sectorsum), c("code", "year", "scalefactor", "variable"), with = FALSE]
 test2 <- merge(test, chart, by.x = c("umbrella", "year", "variable"), by.y = c("code", "year", "variable"), all.x = T)
 
 # apply
-test2[, value := ifelse(is.na(scalefactor), value, value * scalefactor)]
+test2[, value := ifelse(is.na(scalefactor) | is.infinite(scalefactor), value, value * scalefactor)]
 
 # clean up for growth
 test2[, c("tag", "mark", "scalefactor", "umbrella") := NULL]
@@ -773,7 +773,7 @@ test2 <- split(test2, by = c("geography", "code"))
 extendgva <- function(x) {
   DT <- x
   for (y in (base + 1):max(DT$year)) {
-    print(y)
+    #print(y)
     DT[year == y, `:=`
     (try = ifelse(DT[year == y - 1, try] %in% 0, DT[year == y, `gva - chained prices (x 1,000,000)`],
         ifelse(is.finite(DT[year == y, growth]), DT[year == y - 1, try] * (DT[year == y, growth]), DT[year == y, `gva - chained prices (x 1,000,000)`])
@@ -806,7 +806,7 @@ saveRDS(gva, paste0(srcDir, "step8.rds"))
 # Step 9 : Correct zeros                                                         ####
 #------------------------------------------------------------------------------------#
 # bring in primary series
-primary <- envcandbshort[, c("code", "year", "geography", "gross domestic product (gdp) at basic prices-3790030-current prices", "gross domestic product (gdp) at basic prices-3790029-current prices", "gross domestic product (gdp) at basic prices-3790031-chained (2012) dollars", "gross domestic product (gdp) at basic prices-3790030-chained (2012) dollars"), with = F]
+primary <- envcandbshort[, c("code", "year", "geography", "gross domestic product (gdp) at basic prices-3790030-current prices", "gross domestic product (gdp) at basic prices-3790029-current prices", "gross domestic product (gdp) at basic prices-3790031-chained (2012) dollars", "gross domestic product (gdp) at basic prices-3790030-chained (2012) dollars"), with = FALSE]
 primary[geography == "Canada", `:=`
 (
   primaryreal = `gross domestic product (gdp) at basic prices-3790031-chained (2012) dollars`,
@@ -818,7 +818,7 @@ primary[geography != "Canada", `:=`
   primaryreal = `gross domestic product (gdp) at basic prices-3790030-chained (2012) dollars`,
   primarynom = `gross domestic product (gdp) at basic prices-3790030-current prices`
 )]
-primary <- primary[, c("code", "year", "geography", "primaryreal", "primarynom"), with = F]
+primary <- primary[, c("code", "year", "geography", "primaryreal", "primarynom"), with = FALSE]
 gva <- merge(gva, primary, by = c("code", "year", "geography"), all.x = T)
 
 # zero everything if any of these are 0
@@ -838,11 +838,12 @@ gva[,
   by = list(geography, year)
 ]
 
-gva <- gva[, c("code", "year", "geography", "gva - chained prices (x 1,000,000)", "gva - current prices (x 1,000,000)"), with = F ]
+gva <- gva[, c("code", "year", "geography", "gva - chained prices (x 1,000,000)", "gva - current prices (x 1,000,000)"), with = FALSE ]
 
 
 
 saveRDS(gva, paste(srcDir, "finalgvaseries.rds", sep = ""))
+saveRDS(gva, paste(srcDir, "step9.rds", sep = ""))
 print("GVA series ready.")
 
 #------------------------------------------------------------------------------------#
@@ -941,7 +942,7 @@ for (i in 1:5) {
 
 GVAallocation[, c("share", "umbrella", "umbrellaval", "try") := NULL]
 
-saveRDS(GVAallocation, paste(srcDir, "step3.rds", sep = ""))
+saveRDS(GVAallocation, paste(srcDir, "step10.rds", sep = ""))
 
 #------------------------------------------------------------------------------------#
 # Step 11: Use umbrella growth rates to fill gaps                                ######
@@ -990,7 +991,7 @@ dbformerge <- dbformerge[, variable := as.character(variable)]
 chainedvarsforgrowth <- dbformerge[variable %in% variableschained][!(variable %like% "gva")]
 
 
-saveRDS(step5db, paste(srcDir, "step5.rds", sep = ""))
+saveRDS(step5db, paste(srcDir, "step11.rds", sep = ""))
 
 
 
@@ -1058,7 +1059,7 @@ firsttieall <- mapply(verthortieup, allseriesfortieup, tagsforfix2, gvatag = 0, 
 # allseriesforgrowthrates<-rbind(rbindlist(firsttieall),employment,wages,chainedvarsforgrowth)
 allseriesforgrowthrates <- rbind(rbindlist(firsttieall), wages, chainedvarsforgrowth)
 
-saveRDS(allseriesforgrowthrates, paste(srcDir, "step10.rds", sep = ""))
+saveRDS(allseriesforgrowthrates, paste(srcDir, "step12.rds", sep = ""))
 rm(list = c("allseriesfortieup", "firsttieall"))
 #------------------------------------------------------------------------------------#
 # Step 13: Impose all real data growth rates to all the series                   #####
@@ -1119,7 +1120,7 @@ fixedseriesformerge <- pblapply(dbsplit3, lapply, imposegrowthrates)
 fixedseriesall <- rbindlist(lapply(fixedseriesformerge, rbindlist))
 # gapfilldb<-dcast(fixedseries,geography+code+year~variable)
 saveRDS(fixedseriesall, paste(srcDir, "fixedseriesall.rds", sep = ""))
-
+saveRDS(fixedseriesall, paste(srcDir, "step13.rds", sep = ""))
 #------------------------------------------------------------------------------------#
 # Step 14: Test tie ups                                                          #####
 #------------------------------------------------------------------------------------#
@@ -1180,6 +1181,9 @@ if (!("variable" %in% names(finalgvaseries))) {
 # dbtieups<-rbind(allseriestied,employment,wages,hours,finalgvaseries)
 dbtieups <- rbind(allseriestied, wages, hours, finalgvaseries)
 
+saveRDS(dbtieups, paste(srcDir, "step14.rds", sep = ""))
+
+
 #------------------------------------------------------------------------------------#
 # Step 15: Remerge with macro vars and prepare for export                        #####
 #------------------------------------------------------------------------------------#
@@ -1203,6 +1207,7 @@ suppressWarnings(fulldb[, level := NULL])
 
 exportpath <- paste(srcDir, "envcandb-full.rds", sep = "")
 saveRDS(fulldb, eval(exportpath))
+saveRDS(fulldb, paste(srcDir, "step15.rds", sep = ""))
 
 # recover
 # exportpath <-paste(srcDir, "envcandb-full.rds",sep="")
@@ -1333,7 +1338,7 @@ forexport <- forexport[test < nyear][, test := NULL]
 # first non-NA
 forexport[, test := apply(.SD, 1, function(x) min(which(!is.na(x)))), .SD = (yearcols)]
 # replace
-for (i in seq_along(forexport[, (yearcols), with = F])) {
+for (i in seq_along(forexport[, (yearcols), with = FALSE])) {
   set(forexport, which(forexport$test > i), as.integer(i + 6), value = .001)
 }
 
@@ -1341,7 +1346,7 @@ for (i in seq_along(forexport[, (yearcols), with = F])) {
 # first non-NA
 forexport[, test := apply(.SD, 1, function(x) max(which(!is.na(x)))), .SD = (yearcols)]
 # replace
-for (i in seq_along(forexport[, (yearcols), with = F])) {
+for (i in seq_along(forexport[, (yearcols), with = FALSE])) {
   # print(i)
   # print(as.character(intersect(which(forexport$test>i) , which(is.na(forexport[[i+6]])))))
   set(forexport, intersect(which(forexport$test > i), which(is.na(forexport[[i + 6]]))), as.integer(i + 6), value = -100)
@@ -1354,7 +1359,7 @@ for (i in seq_along(forexport[, (yearcols), with = F])) {
 suppressWarnings(forexport[, test := apply(.SD, 1, function(x) min(which(x == -100))), .SD = (yearcols)])
 forexport[is.infinite(test), test := 0]
 # replace
-for (i in seq_along(forexport[, (yearcols), with = F])) {
+for (i in seq_along(forexport[, (yearcols), with = FALSE])) {
   set(forexport, which(forexport$test > i), as.integer(i + 6), value = .001)
 }
 forexport[forexport == -100] <- .001
@@ -1363,7 +1368,7 @@ forexport[forexport == -100] <- .001
 suppressWarnings(forexport[, test := apply(.SD, 1, function(x) max(which(x == .001))), .SD = (yearcols)])
 forexport[is.infinite(test), test := 0]
 # replace
-for (i in seq_along(forexport[, (yearcols), with = F])) {
+for (i in seq_along(forexport[, (yearcols), with = FALSE])) {
   set(forexport, which(forexport$test > i), as.integer(i + 6), value = .001)
 }
 
@@ -1371,7 +1376,7 @@ for (i in seq_along(forexport[, (yearcols), with = F])) {
 
 # make model readable
 forexport[, test := Reduce(`+`, lapply(.SD, function(x) is.na(x)))]
-forexport <- forexport[, !c("geography", "code", "industry", "variable"), with = F]
+forexport <- forexport[, !c("geography", "code", "industry", "variable"), with = FALSE]
 forexport[, `:=`
 (
   V = "V",

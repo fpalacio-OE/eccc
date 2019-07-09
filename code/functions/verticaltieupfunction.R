@@ -23,13 +23,13 @@ verthortieup <- function(seriestable, tagtable, gvatag) {
     gvaseries2[tag == 1, scale := (Canada - provtotal) / provtotal]
     gvaseries2[tag != 1, Canada := rowSums(.SD), .SDcols = (notcanada)]
     # split apart and merge for fixes
-    scales <- gvaseries2[, c("code", "year", "scale", "variable"), with = F]
-    nationalvals <- melt(gvaseries2[, c("code", "year", "variable", "Canada"), with = F], id.vars = c("code", "year", "variable"), variable.name = "geography")
+    scales <- gvaseries2[, c("code", "year", "scale", "variable"), with = FALSE]
+    nationalvals <- melt(gvaseries2[, c("code", "year", "variable", "Canada"), with = FALSE], id.vars = c("code", "year", "variable"), variable.name = "geography")
     if (gvatag == 1) {
       nationalvals <- nationalvals[variable == "gva - current prices (x 1,000,000)"]
     }
 
-    gvaseriesremelt <- melt(gvaseries2[, c("code", "year", "variable", eval(notcanada)), with = F], id.vars = c("code", "year", "variable"), variable.name = "geography")
+    gvaseriesremelt <- melt(gvaseries2[, c("code", "year", "variable", eval(notcanada)), with = FALSE], id.vars = c("code", "year", "variable"), variable.name = "geography")
 
     # db ready:
     gvaseriesforhorvert <- scales[gvaseriesremelt, on = c("code", "year", "variable")]
@@ -41,7 +41,7 @@ verthortieup <- function(seriestable, tagtable, gvatag) {
     gvaseriesforhorvert[, level := shiftshares$level[match(code, shiftshares$code, nomatch = NA)]]
 
     gvaseriesforhorvert[level == i & abs(scale) > .05, tag := 1]
-    gvaseriesforhorvert[tag == 1, value := value + scale * value]
+    gvaseriesforhorvert[tag   == 1,  value := value + scale * value]
 
     # bring back old fixes and umbrella
     tagsformerge <- tagtable
@@ -52,14 +52,14 @@ verthortieup <- function(seriestable, tagtable, gvatag) {
 
     # This function is used again and works as long as it has this colname structure : "geography" "code"  "umbrella"    "year"      "variable"  "value" "tag"
     gvaseries2 <- tieupfunction(gvaseriesforhorvert)
-    suppressWarnings(gvaseries2 <- rbind(gvaseries2[, !c("umbrella", "tag"), with = F], nationalvals))
+    suppressWarnings(gvaseries2 <- rbind(gvaseries2[, !c("umbrella", "tag"), with = FALSE], nationalvals))
 
     compares <- merge(gvaseries2, gvaseriesremelt, by = c("geography", "variable", "code", "year"))
     compares <- merge(compares, tagtable, by = c("geography", "variable", "code", "year"))
     setnames(compares, c("value.x", "value.y"), c("new", "old"))
     # fix if values seem to converge, or if it's real data
     compares[, level := shiftshares$level[match(code, shiftshares$code, nomatch = NA)]]
-    compares[level == (i + 1) & !is.na(new) & !is.na(old), tag2 := (ifelse(abs(new - old) < .05, 1L, 0L))]
+    compares[level == (i + 1) & !is.na(new) & !is.na(old), tag2 := (ifelse((abs(new - old) / old) < .05, 1L, 0L))]
     compares[level == (i + 1) & !is.na(new) & !is.na(old), tag := as.numeric(ifelse(tag == 1, as.numeric(1), as.numeric(tag2)))]
 
     tagtable <- compares[, c("new", "old", "level", "tag2") := NULL]
@@ -71,7 +71,7 @@ verthortieup <- function(seriestable, tagtable, gvatag) {
   # bring back national values and chained values
   # gvahorfixed<- rbind(nationalvals,gvaseriesforhorvert[, c("umbrella", "sectorsum","tag"):=NULL])
   if (gvatag == 1) {
-    suppressWarnings(gvachained <- forgrowbackcomplete[, c("umbrella", "tag") := NULL])
+    suppressWarnings(gvachained <- seriestable[, c("umbrella", "tag") := NULL])
     gvahorfixed <- rbind(gvaseriesforhorvert, gvachained[variable == "gva - chained prices (x 1,000,000)"])
     #print(nrow(gvahorfixed))
     gvahorfixed[, variable := as.character(variable)]

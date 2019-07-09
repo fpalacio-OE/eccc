@@ -8,10 +8,6 @@ library(xlsx)
 # dstDir     = "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/eccc/outputs/"
 options(scipen = 999)
 
-
-
-
-
 hpfilter2 <- function(x, lambda = 6.25) {
   eye <- diag(length(x))
   result <- solve(eye + lambda * crossprod(diff(eye, lag = 1, d = 2)), x)
@@ -26,9 +22,9 @@ dt <- forexport[(grepl("^K|^Y|^EMP|^AV", mnemonic) & !(grepl("^KD|^KME|^KIP|^KC"
 
 # tag variable
 dt[grepl("EMP", mnemonic), variable := "EMP"]
-dt[grepl("^Y", mnemonic), variable := "Y"]
+dt[grepl("^Y", mnemonic) , variable := "Y"]
 dt[grepl("^AV", mnemonic), variable := "AVHR"]
-dt[grepl("^K", mnemonic), variable := "K"]
+dt[grepl("^K", mnemonic) , variable := "K"]
 # tag sector
 dt[variable == "EMP", ind := gsub("EMP", "", mnemonic)]
 dt[variable == "Y", ind := gsub("^Y", "", mnemonic)]
@@ -202,7 +198,7 @@ trend[, mnemonic := paste(varsymbol, ind, sep = "")][, c("varsymbol", "ind") := 
 # kill early NAs
 suppressWarnings(trend[, test := apply(.SD, 1, function(x) min(which(!is.na(x)))), .SD = (yearcols)])
 # replace
-for (i in seq_along(trend[, (yearcols), with = F])) {
+for (i in seq_along(trend[, (yearcols), with = FALSE])) {
   set(trend, which(trend$test > i), as.integer(i + 1), value = .001)
 }
 
