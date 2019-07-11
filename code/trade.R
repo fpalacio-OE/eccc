@@ -6,21 +6,21 @@ library(XML)
 library(quantmod)
 library(stringr)
 library(rlang)
-##############################################################################################################################
-####      READ ME                                                                                                         ####
-#### This file requires:                                                          Currently held in:                      ####
-#### 1. A set of URLs                                                             DataWarehouse-2.xlsm                    ####
-#### 2. A comprehensive directory of possible industry names to NAICS codes       Directory-namestonaicscodes.xlsx        ####
-####    (Formatting and contents have implications on objects d and m as well                                             ####
-####     the import range in line 26 below)                                                                               ####
-##############################################################################################################################
+#------------------------------------------------------------------------------------
+####      READ ME                                                                                                         
+#### This file requires:                                                          Currently held in:                      
+#### 1. A set of URLs                                                             DataWarehouse-2.xlsm                    
+#### 2. A comprehensive directory of possible industry names to NAICS codes       Directory-namestonaicscodes.xlsx        
+####    (Formatting and contents have implications on objects d and m as well                                             
+####     the import range in line 26 below)                                                                               
+#------------------------------------------------------------------------------------
 
 
 
 
-#############################################################################################
-## Set Directory, Export Name, Import Range, and other parameters:
-#############################################################################################
+#------------------------------------------------------------------------------------#
+## Set Directory, Export Name, Import Range, and other parameters:               #####
+#------------------------------------------------------------------------------------#
 # srcDir     = "/Users/Fabio/Documents/oe/eccc/resources/"
 # dstDir     = "/Users/Fabio/Documents/oe/eccc/outputs/"
 # srcDir     = "C:/Users/Fabio Palacio.OEF/OneDrive - Oxford Economics/envcan/eccc/resources/"
@@ -43,25 +43,25 @@ provinces <- c(
   "Canada"
 )
 
-urlfile <- "DataWarehouse-4.xlsm"
-codedir <- "Directory-namestonaicscodes-2.xlsx" # <-------------- # This file contains (on the left are sheet names):
-mainlist <- "Main" # 1. The official list of delivered sectors
+urlfile    <- "DataWarehouse-4.xlsm"
+codedir    <- "Directory-namestonaicscodes-2.xlsx" # <-------------- # This file contains (on the left are sheet names):
+mainlist   <- "Main" # 1. The official list of delivered sectors
 xtendeddir <- "Expanded" # 2. The list of all the pulled sectors, including those that are used to calculate one of the official sectors
-mapdir <- "Mapping" # 3. The mapping of the 2 to 1
-smerge <- "SeriesMerge" # 4. The mapping of the various series that make each variable
+mapdir     <- "Mapping" # 3. The mapping of the 2 to 1
+smerge     <- "SeriesMerge" # 4. The mapping of the various series that make each variable
 
 # mapping file (useful at times)
 naicsdir <- paste(srcDir, eval(codedir), sep = "")
-naics <- as.data.table(read_excel(naicsdir, na = "NA", sheet = eval(mainlist), col_names = TRUE))
-nind <- nrow(naics) # of industries
+naics    <- as.data.table(read_excel(naicsdir, na = "NA", sheet = eval(mainlist), col_names = TRUE))
+nind     <- nrow(naics) # of industries
 
 # upload mapping doc & extended sectors list
-mapping <- as.data.table(read_excel(naicsdir, na = "NA", sheet = eval(mapdir), col_names = TRUE, col_types = c("guess", "guess", "guess", "guess", "text", "guess")))
+mapping       <- as.data.table(read_excel(naicsdir, na = "NA", sheet = eval(mapdir), col_names = TRUE, col_types = c("guess", "guess", "guess", "guess", "text", "guess")))
 fullnaicslist <- as.data.table(read_excel(naicsdir, na = "NA", sheet = eval(xtendeddir), col_names = TRUE))
 
 # upload series merge map
-merge <- as.data.table(read_excel(naicsdir, na = "NA", sheet = eval(smerge), col_names = TRUE))
-mnems <- as.data.table(read_excel(naicsdir, na = "NA", sheet = "FinalMnem", col_names = TRUE))
+merge   <- as.data.table(read_excel(naicsdir, na = "NA", sheet = eval(smerge), col_names = TRUE))
+mnems   <- as.data.table(read_excel(naicsdir, na = "NA", sheet = "FinalMnem", col_names = TRUE))
 sectors <- as.data.table(read_excel(naicsdir, na = "NA", sheet = "sectorcode", col_names = TRUE))
 
 
@@ -71,32 +71,30 @@ shiftshares <- as.data.table(read_excel(naicsdir, na = "NA", sheet = "Shiftshare
 
 # concordance
 concordance_file <- "Trade-concordance.xlsx"
-concordance <- as.data.table(read_excel(paste0(srcDir, concordance_file), na = "NA", col_names = TRUE))
+concordance     <- as.data.table(read_excel(paste0(srcDir, concordance_file), na = "NA", col_names = TRUE))
 
 # int. import weights
-intimp_file <- "pmx_weights.xlsx"
+intimp_file    <- "pmx_weights.xlsx"
 intimp_weights <- as.data.table(read_excel(paste0(srcDir, intimp_file), na = "NA", col_names = TRUE))
 
 
-#############################################################################################
-## Get trade data
-#############################################################################################
+#------------------------------------------------------------------------------------#
+# Get trade data                                  ####
+#------------------------------------------------------------------------------------#
 options(scipen = 999)
 # Load up bases
-# RDSpath <-paste(dstDir, "envcandb-new.rds",sep="")
-envcandb <- readRDS(paste(srcDir, "trade-new.rds", sep = ""))
-# envcandb<-envcan[[1]]
-envcandb <- dcast(envcandb, geography + industry + year ~ var)
 
+envcandb      <- readRDS(paste(srcDir, "trade-new.rds", sep = ""))
+envcandb      <- dcast(envcandb, geography + industry + year ~ var)
 envcandbshort <- envcandb[year >= 1980]
 rm(envcandb)
 
-tradeseries <- c("geography", "industry", "year", as.character(names(envcandbshort)[grepl("2280064|3860003|3800070", names(envcandbshort)) ]))
-trade <- envcandbshort[, ..tradeseries]
+tradeseries   <- c("geography", "industry", "year", as.character(names(envcandbshort)[grepl("2280064|3860003|3800070", names(envcandbshort)) ]))
+trade         <- envcandbshort[, ..tradeseries]
 
-#############################################################################################
-## Get deflators
-#############################################################################################
+#------------------------------------------------------------------------------------#
+# Get deflators                                   ####
+#------------------------------------------------------------------------------------#
 deflator_file <- "final-goutput2.rds"
 
 deflator_file <- readRDS(paste0(dstDir, deflator_file))
@@ -108,40 +106,40 @@ deflator_file[is.na(deflator) | deflator == "" | deflator == .001, deflator := N
 deflator_file[mnemonic == "PI", mnemonic := NA]
 setnames(deflator_file, "mnemonic", "mnem")
 
-#############################################################################################
-## Begin building new series
-#############################################################################################
+#------------------------------------------------------------------------------------#
+# Begin building new series                       ####
+#------------------------------------------------------------------------------------#
 
 
 # get the necessary files
 weightsfilename <- "Trade - Product to Ind mapping.xlsx"
-exports <- "Exports"
-intproimp <- "Interprovincial Imports"
-intnatimp <- "International imports"
+exports         <- "Exports"
+intproimp       <- "Interprovincial Imports"
+intnatimp       <- "International imports"
 
 
 # Weights
 weightsfilepath <- paste(srcDir, weightsfilename, sep = "")
-weights <- as.data.table(read_excel(weightsfilepath, na = "NA", sheet = eval(exports), col_names = TRUE))
+weights         <- as.data.table(read_excel(weightsfilepath, na = "NA", sheet = eval(exports), col_names = TRUE))
 
 # Group maps
-groupmap <- read.csv(paste(srcDir, "groupmapping.csv", sep = ""), header = T)
+groupmap                 <- read.csv(paste(srcDir, "groupmapping.csv", sep = ""), header = T)
 groupmap[groupmap == ""] <- NA
-groupmap <- na.locf(groupmap)
+groupmap                 <- na.locf(groupmap)
 
 # expand weights file and re match products
 
-remap <- as.data.table(read.csv(paste(srcDir, "remap.csv", sep = ""), na = "NA", stringsAsFactors = F))
+remap   <- as.data.table(read.csv(paste(srcDir, "remap.csv", sep = ""), na = "NA", stringsAsFactors = F))
 weights <- remap[weights, on = c("PRODUCT", "sector_cd")][, ProductCode := NULL]
-setnames(weights, "i.ProductCode", "ProductCode")
-weights[, sector_cd := ifelse(is.na(sector_cd_new), sector_cd, sector_cd_new)][, sector_cd_new := NULL]
+setnames(  weights, "i.ProductCode", "ProductCode")
+weights[,  sector_cd := ifelse(is.na(sector_cd_new), sector_cd, sector_cd_new)][, sector_cd_new := NULL]
 
-#############################################################################
-#### begin with exports
-#############################################################################
+#------------------------------------------------------------------------------------#
+# begin with exports                              ####
+#------------------------------------------------------------------------------------#
 # merge group map with weights & trade data for ref year
 fullmap <- as.data.table(merge(groupmap, weights, by.x = "Code", by.y = "ProductCode", all.y = T))
-fullmap[, Ref_Date := as.character(Ref_Date)]
+fullmap[,  Ref_Date := as.character(Ref_Date)]
 
 # collapse down to a group mapping (groups from table 386-0003)
 grouptable <- fullmap[, lapply(.SD, sum), by = list(GEO, Group.Code, Group.Title, sector_cd, model_sector), .SDcols = "SumOfValue" ]
@@ -150,7 +148,7 @@ grouptable <- fullmap[, lapply(.SD, sum), by = list(GEO, Group.Code, Group.Title
 grouptable[, GroupTotal := sum(SumOfValue), by = list(GEO, Group.Code)][, props := SumOfValue / GroupTotal]
 
 ## prepare trade data for merge
-exportseries <- c("geography", "industry", "year", as.character(names(trade)[names(trade) %like% "export"]))
+exportseries  <- c("geography", "industry", "year", as.character(names(trade)[names(trade) %like% "export"]))
 tradeformerge <- trade[, ..exportseries]
 tradeformerge[, industry := str_trim(gsub(" \\(x 1,000\\)", "", industry))]
 
@@ -159,8 +157,8 @@ keep <- c("GEO", "sector_cd", "model_sector", "year", "interprovexports", "inter
 exports <- merge(grouptable, tradeformerge, by.x = c("Group.Title", "GEO"), by.y = c("industry", "geography"), allow.cartesian = T)
 exports[, `:=`
 (
-  `interprovincial exports-3860003-current prices` = as.numeric(gsub("[^0-9.]", "", `interprovincial exports-3860003-current prices`)),
-  `international exports-3860003-current prices` = as.numeric(gsub("[^0-9.]", "", `international exports-3860003-current prices`)),
+  `interprovincial exports-3860003-current prices`  = as.numeric(gsub("[^0-9.]", "", `interprovincial exports-3860003-current prices`)),
+  `international exports-3860003-current prices`    = as.numeric(gsub("[^0-9.]", "", `international exports-3860003-current prices`)),
   `international re-exports-3860003-current prices` = as.numeric(gsub("[^0-9.]", "", `international re-exports-3860003-current prices`))
 )][, `:=`
   (
@@ -173,9 +171,9 @@ mysum <- function(x) if (all(is.na(x))) as.numeric(NA) else sum(x, na.rm = T)
 
 exports <- exports[, lapply(.SD, mysum), by = list(GEO, year, sector_cd, model_sector), .SDcols = c("interprovexports", "internatexports", "internatreexports")]
 exports <- exports[, ..keep]
-#############################################################################
-## int prov. imports
-#############################################################################
+#------------------------------------------------------------------------------------#
+# int prov. imports                               ####
+#------------------------------------------------------------------------------------#
 # Weights
 weightsfilepath <- paste(srcDir, weightsfilename, sep = "")
 weights <- as.data.table(read_excel(weightsfilepath, na = "NA", sheet = eval(intproimp), col_names = TRUE))
@@ -230,9 +228,9 @@ imports[, `:=`
   (interprovimports = props * `interprovincial imports-3860003-current prices`)]
 imports <- imports[, lapply(.SD, mysum), by = list(GEO, year, sector_cd, model_sector), .SDcols = c("interprovimports")]
 imports <- imports[, ..tokeep]
-#############################################################################
-#### 3. int nat. import index                                            ####
-#############################################################################
+#------------------------------------------------------------------------------------#
+# int nat. import index                           ####
+#------------------------------------------------------------------------------------#
 # Weights
 # weightsfilepath<- paste(srcDir,weightsfilename, sep="")
 # weights<- as.data.table(read_excel(weightsfilepath,  na = "NA", sheet= eval(intnatimp) ,col_names= TRUE))
@@ -274,9 +272,9 @@ setnames(intimportindex, "geography", "GEO")
 
 intimportindex <- unique(intimportindex[, ..keep])
 
-#############################################################################
-## int nat. imports ####
-#############################################################################
+#------------------------------------------------------------------------------------#
+# int nat. imports                                ####                                            
+#------------------------------------------------------------------------------------#
 # Weights
 weightsfilepath <- paste(srcDir, weightsfilename, sep = "")
 weights <- as.data.table(read_excel(weightsfilepath, na = "NA", sheet = eval(intnatimp), col_names = TRUE))
@@ -325,9 +323,9 @@ tradefinal <- tradefinal[GEO != "Canadian territorial enclaves abroad"]
 # fix names
 names(tradefinal) <- c("geography", "mnem", "industry", "year", "internatimports", "interprovimports", "interprovexports", "internatexports", "importindex")
 
-#############################################################################
-## int nat. trade services deflators                                     #####
-#############################################################################
+#------------------------------------------------------------------------------------#
+# int nat. trade services deflators
+#------------------------------------------------------------------------------------#
 # serdef <- names(trade)[ grepl("total.*services", tolower(names(trade)))]
 # 
 # tokeep <- c("geography", "industry", "year", serdef)
@@ -345,9 +343,9 @@ names(tradefinal) <- c("geography", "mnem", "industry", "year", "internatimports
 # serdef <- serdef[, ..tokeep]
 # serdef <- melt(serdef, id.vars = c("geography", "industry", "year"))
 # serdef[, `:=`(sectorcode = "CANADA", mnemonic = ifelse(variable %like% "import","PM","PX"), code = "NAT", mnem = "")]
-######################################################
+#------------------------------------------------------------------------------------#
 # make agriculture                                    #
-######################################################
+#------------------------------------------------------------------------------------#
 
 
 
@@ -355,10 +353,9 @@ names(tradefinal) <- c("geography", "mnem", "industry", "year", "internatimports
 # ag   <-ag[, lapply(.SD,mysum), .SDcols=c("internatimports",  "interprovimports","interprovexports","internatexports"), by=c("year","geography")]
 # ag[,code:="11"][,industry:="agriculture"]
 # tradefinal<-rbind(tradefinal,ag)
-######################################################
-# Step 7:                                         #####
-# Reshape, add Mnemonics export                  #####
-######################################################
+#------------------------------------------------------------------------------------#
+# Aggregate series where necessary                #####
+#------------------------------------------------------------------------------------#
 
 # stipulate aggregation functions
 
@@ -438,10 +435,10 @@ for (i in 1:nrow(work_graph)) {
 
 tradefinal[is.nan(importindex), importindex := NA]
 
-######################################################
+#------------------------------------------------------------------------------------#
 # Step 8:                                         #####
-# Create real series                             #####
-######################################################
+# Create real series                              #####
+#------------------------------------------------------------------------------------#
 
 tradefinal[, sectorcode := sectors$code[match(geography, sectors$geography, nomatch = NA)]]
 
@@ -468,10 +465,10 @@ tradefinal2[, (real) := list(
 
 tradefinal2[, sectorcode := NULL]
 
-######################################################
+#------------------------------------------------------------------------------------#
 # Step 9:                                         #####
-# Prepare for export                             #####
-######################################################
+# Prepare for export                              #####
+#------------------------------------------------------------------------------------#
 
 
 fulldb <- tradefinal2[geography != "Canada", importindex := NA]

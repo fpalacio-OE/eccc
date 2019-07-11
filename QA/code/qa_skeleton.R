@@ -284,7 +284,7 @@ view_interpolation <- function(variable,raw, new) {
   tab        <- comparison[.(var,geo), nomatch = 0]
   #print(dcast(tab,...~vintage))
   plt <- ggplot(tab,aes(x = year, y = value, color = vintage )) +
-    geom_line(na.rm = T, position = position_jitter(w = .2, h = 0)) +
+    geom_line(na.rm = T, position = position_jitter(w = .1, h = 0)) +
     geom_point(na.rm = T) +
     theme(legend.position = c(.9,.2), plot.title = element_text( hjust = .5, vjust = 0.5, face = 'bold')) +
     ggtitle(variable)
@@ -406,6 +406,9 @@ produce_summary <- function(geo, sectorgroup = "", orig = copy(raw), curr = copy
 #"SASKCHWN" "YUKON" 
 #produce_summary("B_COLUMB","3")
 
-
-
+check_zeros <- function(test) {
+  test <- new[!value %in% c(.001,NA)][, zero := value == 0][,  sumtest := sum(value, na.rm = T),
+                                                            by = list(geography, code, variable)][sumtest != 0][value == 0]
+  unique(test[,.(variable,geography)])
+}
 

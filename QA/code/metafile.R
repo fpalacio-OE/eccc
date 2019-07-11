@@ -37,15 +37,15 @@ source(paste0(srcDir.qa, "qa_skeleton.R"))
 source(paste0(srcDir.new,"code/functions/AttachMnemonics.R"))
 
 # data output file names (must be CSVs):
-datafiles.old <- c("envcandb-filled.csv",
-                   "final-goutput2.csv",
-                   "trade.csv",
-                   "trend.csv")
-
-datafiles.new <- c("envcandb-filled.csv",
-                   "final-goutput.csv",
-                   "trade.csv",
-                   "trend.csv")
+datafiles.old <- c(     "envcandb-filled.csv",
+                        "final-goutput2.csv",
+                        "trade.csv",
+                        "trend.csv")
+    
+datafiles.new <- c(     "envcandb-filled.csv",
+                        "final-goutput.csv",
+                        "trade.csv",
+                        "trend.csv")
 
 # the pre-interpolation files (must be RDS)
 rawdata.filename.old <- "shortdb.rds"
@@ -67,17 +67,16 @@ industry.mnems    <- c("",'A','AC','AA','AF','AH','AS','E','EO','EM','EMC','EMM'
                        'RE','PROF','ENT','AWMS','EDU','HEAL','ART','ACC','OTHS','PUB')
 
 
-finalvariables <- c(
-  "employment", "gross output (x 1,000,000)", "price index", "capital stock - chained prices (x 1,000,000)",
-  "investment, mach - chained prices (x 1,000,000)", "investment, constr - current prices (x 1,000,000)",
-  "depreciation, mach - chained prices (x 1,000,000)", "gva - current prices (x 1,000,000)", "investment - current prices (x 1,000,000)",
-  "investment - chained prices (x 1,000,000)", "capital depreciation - chained prices (x 1,000,000)",
-  "investment, ip - current prices (x 1,000,000)", "investment, constr - chained prices (x 1,000,000)",
-  "depreciation, constr - chained prices (x 1,000,000)", "stock, mach - chained prices (x 1,000,000)",
-  "stock, constr - chained prices (x 1,000,000)", "gva - chained prices (x 1,000,000)", "investment, mach - current prices (x 1,000,000)",
-  "investment, ip - chained prices (x 1,000,000)", "hours worked", "depreciation, ip - chained prices (x 1,000,000)",
-  "gross output - constant prices (x 1,000,000)", "stock, ip - chained prices (x 1,000,000)", "wages"
-)
+finalvariables    <- c("employment", "gross output (x 1,000,000)", "price index", "capital stock - chained prices (x 1,000,000)",
+                       "investment, mach - chained prices (x 1,000,000)", "investment, constr - current prices (x 1,000,000)",
+                       "depreciation, mach - chained prices (x 1,000,000)", "gva - current prices (x 1,000,000)", 
+                       "investment - current prices (x 1,000,000)","investment - chained prices (x 1,000,000)", 
+                       "capital depreciation - chained prices (x 1,000,000)","investment, ip - current prices (x 1,000,000)", 
+                       "investment, constr - chained prices (x 1,000,000)","depreciation, constr - chained prices (x 1,000,000)",
+                       "stock, mach - chained prices (x 1,000,000)","stock, constr - chained prices (x 1,000,000)", 
+                       "gva - chained prices (x 1,000,000)", "investment, mach - current prices (x 1,000,000)",
+                       "investment, ip - chained prices (x 1,000,000)", "hours worked", "depreciation, ip - chained prices (x 1,000,000)",
+                       "gross output - constant prices (x 1,000,000)", "stock, ip - chained prices (x 1,000,000)", "wages")
 
 sectorals <- readRDS(paste(srcDir.new,rsrc, "sectorals.rds", sep = ""))
 formacros <- names(raw.new)[!(names(raw.new) %in% c(sectorals, finalvariables, "industry"))] # <------------NOTICE THESE NAMES ARE HARDCODED
@@ -116,7 +115,9 @@ old <- old[!rmv]
 
 # Comparison (new v old dbs) -----------------
 
+#gained or lost any series?
 db_dimensions(new,old)
+
 
 var <- "KMCHEMM,NFOUNLND"
 compare_datasets(var, old,new, raw)
@@ -150,4 +151,7 @@ view_interpolation(variable,raw,new)
 #it will then give you options for additional detail including a small table for specific sectors
 
 produce_summary(     "B_COLUMB","s")
+
+# check for series with interspersed zeros
+zero.vars <- check_zeros(new)
 

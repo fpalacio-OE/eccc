@@ -248,6 +248,7 @@ rgrossoutputtable <- rgrossoutputtable[, c("year", "code", "geography", "gva - c
 # 8.  Calculate Price indeces & use these to fix 0 mismatches                        #####
 #------------------------------------------------------------------------------------#
 
+#       first for mismatches in gva                                                  ####
 fulldb        <- rgrossoutputtable
 umbrellasects <- unique(shiftshares$umbrella)[!is.na(unique(shiftshares$umbrella)) & unique(shiftshares$umbrella) != "NAT"]
 matchbase     <- as.data.table(naics[, cbind(code, alias1)])
@@ -330,20 +331,19 @@ correctedbase[, `:=`
 correctedbase[, pgdp := ifelse(`gva - current prices (x 1,000,000)` == 0, 0, `gva - current prices (x 1,000,000)` / `gva - chained prices (x 1,000,000)` * 100)]
 #correctedbase[, p := NULL]
 
-## Now calculate output price ##
+#       then for mismatches in gross output                                          ####
 
 fulldb[, pgdp := NULL]
 fix_zeros_output <- function(fulldb) {
-  # first id the exceptions
+  # first id the mismatches
   exceptions <- (fulldb[(`gross output - constant prices (x 1,000,000)` != 0 & `gross output (x 1,000,000)` == 0) | (`gross output - constant prices (x 1,000,000)` == 0 & `gross output (x 1,000,000)` != 0)])
   exceptions[, toreplace := ifelse(`gross output - constant prices (x 1,000,000)` == 0, "real", "nominal")]
   exceptions <- unique(exceptions[, c("geography", "code", "toreplace", "year")])
 
   # keep only lowest levels
   # make umbrellas
-  exceptions[, umbrella := shiftshares$umbrella[match(exceptions$code, shiftshares$code, nomatch = NA)]]
-
-  exceptions[, test := match(code, umbrella), by = list(toreplace, geography, year)]
+  exceptions[,  umbrella := shiftshares$umbrella[match(exceptions$code, shiftshares$code, nomatch = NA)]]
+  exceptions[,  test := match(code, umbrella), by = list(toreplace,year, geography)]
   exceptions <- exceptions[is.na(test)][, c("test", "umbrella") := NULL]
 
   # first just
@@ -412,12 +412,15 @@ fix_zeros_output <- function(fulldb) {
   # recalculate  p
   correctedbase2[, p := ifelse(`gross output (x 1,000,000)` == 0, 100, `gross output (x 1,000,000)` / `gross output - constant prices (x 1,000,000)` * 100)]
 }
+
 correctedbase2 <- fix_zeros_output(fulldb)
+
 # finally, merge the correctedbases
 fulldb <- merge(correctedbase, correctedbase2, by = c("geography", "code", "year"))
 
-# Replicate the above but to make sure that if gva is non-zero then gross output is non-zero
+#       Now, replicate the above but to make sure that if gva is non-zero then gross output is non-zero ####
 
+#       first the real                                                               ####
 
 # first id the exceptions
 exceptions <- (fulldb[(`gross output - constant prices (x 1,000,000)` == 0 & `gva - chained prices (x 1,000,000)` != 0)])
@@ -494,11 +497,12 @@ correctedbase3[, `:=`
 # finally, merge the correctedbases
 fulldb <- correctedbase3
 
-# now apply the fix to the nominal series
+#       now the nominal series                                                       ####
 correctedbase4 <- fix_zeros_output(fulldb)
 
 fulldb <- merge(fulldb[, .(geography, code, year, `gva - chained prices (x 1,000,000)`, `gva - current prices (x 1,000,000)`)], correctedbase4, by = c("code", "year", "geography"))
 
+## TODO : (SAUMYA) SOME DAY, RUN A TIE UP FUNCTION HERE ##
 #------------------------------------------------------------------------------------#
 # 9.  Prepare for export                                                             #####
 #------------------------------------------------------------------------------------#

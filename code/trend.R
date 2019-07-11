@@ -20,17 +20,21 @@ forexport <- readRDS(paste(dstDir, "envcandb-filled.rds", sep = ""))
 dt <- forexport[(grepl("^K|^Y|^EMP|^AV", mnemonic) & !(grepl("^KD|^KME|^KIP|^KC", mnemonic)) | grepl("^KCON", mnemonic) | grepl("KMELC", mnemonic) | grepl("KCEM", mnemonic)) & !(grepl("!$", mnemonic))]
 # rm(forexport)
 
+#------------------------------------------------------------------------------------#
+# Reshape data to create "foroperation" and calculate Solow residual              ####
+#------------------------------------------------------------------------------------#
+
 # tag variable
 dt[grepl("EMP", mnemonic), variable := "EMP"]
 dt[grepl("^Y", mnemonic) , variable := "Y"]
 dt[grepl("^AV", mnemonic), variable := "AVHR"]
 dt[grepl("^K", mnemonic) , variable := "K"]
 # tag sector
-dt[variable == "EMP", ind := gsub("EMP", "", mnemonic)]
-dt[variable == "Y", ind := gsub("^Y", "", mnemonic)]
+dt[variable == "EMP" , ind := gsub("EMP", "", mnemonic)]
+dt[variable == "Y"   , ind := gsub("^Y", "", mnemonic)]
 dt[variable == "AVHR", ind := gsub("AVHR", "", mnemonic)]
-dt[variable == "K", ind := gsub("K", "", mnemonic)]
-# dt[ind=="", ind:="total"]
+dt[variable == "K"   , ind := gsub("K", "", mnemonic)]
+
 # remove extra info
 dt[, c("header", "V", "L", "start", "end", "forecastend", "pers", "mnemonic") := NULL]
 # reshape & fix name
@@ -83,7 +87,7 @@ foroperation[, `:=`
 head(foroperation)
 trend <- foroperation[, c(1, 2, 4, 13)]
 
-#
+
 # read data
 years <- as.numeric(max(as.character(trend$year))) - as.numeric(min(as.character(trend$year))) + 1
 trend[, name := paste(sectorcode, ",TREND", ind, sep = "")][, c("ind", "sectorcode") := NULL]
@@ -96,21 +100,29 @@ end   <- max(as.numeric(foroperation$year))
 
 DT2 <- data.table(year = start:end)
 nyear <- end - start + 1
+
+#------------------------------------------------------------------------------------#
+# Run the HP filter on the solow residuals, creating TREND                        ####
+#------------------------------------------------------------------------------------#
+
 for (i in names(trend)) {
   #print(i)
-  j <- paste(i, "-filtered", sep = "")
+  j            <- paste(i, "-filtered", sep = "")
   # get series
-  series <- trend[, get(i)]
+  series       <- trend[, get(i)]
   seriesomitna <- as.double(na.omit(trend[, get(i)]))
+  
   # identify na's
   if (all(is.na(series))) {
     DT2[, (j) := series]
     DT2[, (i) := series]
     next
   }
-  m <- nyear - length(seriesomitna)
-  lastdata <- max(which(!is.na(series)))
+  
+  m         <- nyear - length(seriesomitna)
+  lastdata  <- max(which(!is.na(series)))
   firstdata <- min(which(!is.na(series)))
+  
   # these fixes will complete the series after stripping na's
   if (is.na(series[nyear])) {
     fix1 <- rep(NA, firstdata - 1)
@@ -118,9 +130,9 @@ for (i in names(trend)) {
   } else {
     fix <- rep(NA, m)
   }
+  
   # run filter
   if (!all(seriesomitna == 0)) {
-    # filter3= hpfilter(seriesomitna,6.25,type="lambda", drift=FALSE)
     filtered <- hpfilter2(seriesomitna)
   }
 
@@ -150,7 +162,7 @@ for (i in seq_along(DT2)) {
   }
 }
 
-# prepare export#
+
 # create table
 trend <- setNames(data.table(name = names(DT2)[-1], t(DT2[, -"year"])), c("name", as.character(DT2[["year"]])))
 yearcols <- names(trend)[2:((end - start) + 2)]
@@ -161,6 +173,9 @@ trend[, name := gsub("-filtered|total", "", name)]
 # make everything numeric
 suppressWarnings(trend[, (yearcols) := lapply(.SD, function(y) as.numeric(gsub("[^0-9.]", "", y))), .SD = yearcols])
 
+#------------------------------------------------------------------------------------#
+# Calculate YHAT and CUMOD using TREND                                            ####
+#------------------------------------------------------------------------------------#
 
 # remerge with y,k,emp to re-do yhats
 foryhat <- trend[, c("sectorcode", "ind") := tstrsplit(name, ",")][, ind := gsub("TREND", "", ind)][, name := NULL]
@@ -202,6 +217,9 @@ for (i in seq_along(trend[, (yearcols), with = FALSE])) {
   set(trend, which(trend$test > i), as.integer(i + 1), value = .001)
 }
 
+#------------------------------------------------------------------------------------#
+# Export                                                                          ####
+#------------------------------------------------------------------------------------#
 
 
 # kill late NAs
@@ -225,23 +243,27 @@ trend[, `:=`
   forecastend = end
 )][, "test" := NULL]
 
-# trend[,c("sectorcode","mnemonic"):=tstrsplit(name,",")][,name:=NULL]
 
 setcolorder(trend, c("header", "sectorcode", "mnemonic", "V", "L", "start", "end", "forecastend", "pers", setdiff(names(trend), c("header", "sectorcode", "mnemonic", "V", "L", "start", "end", "forecastend", "pers"))))
 head(trend)
 View(trend[all(.SD == .001), .SDcols = yearcols])
 
-# trend[,test:=apply(.SD,1,function(x) all(0.001==as.numeric(x))),.SDcols=yearcols]
+
 
 trend <- (trend[`2017` != "0.001"])
 
 write.table(trend, file = paste(dstDir, "trend.csv", sep = ""), row.names = FALSE, col.names = FALSE, sep = ",")
+#------------------------------------------------------------------------------------#
+# Create CUMOD forecasts                                                          ####
+#------------------------------------------------------------------------------------#
 
-# Create CUMOD forecasts:
+#set number of years until CUMOD converges to zero
+con = 5
+
 cumods <- foryhatcalc[, .(sectorcode, ind, CUMOD, year)]
 cumods <- cumods[!is.na(CUMOD)]
 cumods <- cumods[, .SD[.N], by = list(sectorcode, ind)]
-cumods[, `:=`(rate = CUMOD / 5, cumod1 = CUMOD)]
+cumods[, `:=`(rate = CUMOD / con, cumod1 = CUMOD)]
 
 
 for (i in 2:6) {
@@ -304,7 +326,9 @@ cumod_list <- lapply(cumod_list, function(x) {
   setcolorder(x, c("header", "sectorcode", "mnemonic", "V", "L", "start", "end", "forecastend", "pers", setdiff(names(x), c("header", "sectorcode", "mnemonic", "V", "L", "start", "end", "forecastend", "pers"))))
 })
 
-# export
+#------------------------------------------------------------------------------------#
+# Export CUMOD forecasts                                                          ####
+#------------------------------------------------------------------------------------#
 cumod_forecasts <- cumod_list
 lapply(cumod_forecasts, function(x) write.table(x, paste(dstDir, "cumod_forecasts.csv", sep = ""), append = T, col.names = F, row.names = F, sep = ","))
 
