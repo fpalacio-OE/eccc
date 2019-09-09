@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2000
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatCanDownloader", "StatCanDownloader\StatCanDownloader.csproj", "{257C3F2F-0C6E-4B47-807D-B8419B47DC1A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{257C3F2F-0C6E-4B47-807D-B8419B47DC1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{257C3F2F-0C6E-4B47-807D-B8419B47DC1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{257C3F2F-0C6E-4B47-807D-B8419B47DC1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{257C3F2F-0C6E-4B47-807D-B8419B47DC1A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {13CFF02A-CEEE-43ED-AC42-E1DCA05F6FD7}
+	EndGlobalSection
+EndGlobal
